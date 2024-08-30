@@ -1,0 +1,37 @@
+{
+  "name": "@gee/procedure",
+  "version": "0.0.1",
+  "license": "MIT",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/gee-procedure.umd.js",
+  "module": "./dist/gee-procedure.es.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/gee-procedure.es.js",
+      "require": "./dist/gee-procedure.umd.js"
+    },
+    "./dist/style.css": "./dist/style.css"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@quasar/extras": "^1.16.4",
+    "axios": "^1.4.0",
+    "quasar": "^2.12.0",
+    "vite-plugin-dts": "^2.3.0",
+    "vue": "^3.2.45"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^4.0.0",
+    "typescript": "^4.9.3",
+    "vite": "^4.1.0",
+    "vue-tsc": "^1.0.24"
+  }
+}

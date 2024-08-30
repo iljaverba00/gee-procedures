@@ -1,0 +1,33 @@
+<template>
+  <q-card>
+    <q-card-section class="text-subtitle1">
+      <div v-html="dialogData?.title"></div>
+    </q-card-section>
+    <q-card-section class="text-subtitle2">
+      <div v-html="dialogData?.description"></div>
+    </q-card-section>
+    <q-card-actions>
+      <q-btn-group v-for="btn in dialogData?.buttons" :key="btn">
+        <q-btn
+          :label="buttonTranscriptions[btn]"
+          class="text-primary"
+          @click="$emit('press', btn)"
+        />
+      </q-btn-group>
+      <q-btn-group> </q-btn-group>
+    </q-card-actions>
+  </q-card>
+</template>
+<script>
+export default {
+  emits: ['press'],
+  props: {
+    dialogData: Object,
+  },
+  data() {
+    return {
+      buttonTranscriptions: { YES: 'Да', NO: 'НЕТ', YES_TO_ALL: 'Да, для всех' },
+    };
+  },
+};
+</script>
