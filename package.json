@@ -1,5 +1,6 @@
 {
   "name": "@gee/procedure",
+  "private": false,
   "version": "0.0.1",
   "license": "MIT",
   "type": "module",
@@ -19,16 +20,28 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "update": "node update.js"
   },
   "dependencies": {
     "@quasar/extras": "^1.16.4",
+    "asn1js": "^3.0.5",
     "axios": "^1.4.0",
+    "buffer": "^6.0.3",
+    "pkijs": "^3.0.15",
     "quasar": "^2.12.0",
+    "sass": "^1.68.0",
     "vite-plugin-dts": "^2.3.0",
     "vue": "^3.2.45"
   },
   "devDependencies": {
+    "@quasar/vite-plugin": "^1.3.3",
+    "@types/proj4": "^2.5.2",
+    "@typescript-eslint/eslint-plugin": "^6.1.0",
+    "@typescript-eslint/parser": "^6.1.0",
+    "eslint": "^8.45.0",
+    "eslint-plugin-vue": "^9.15.1",
+    "vite-plugin-eslint": "^1.8.1",
     "@vitejs/plugin-vue": "^4.0.0",
     "typescript": "^4.9.3",
     "vite": "^4.1.0",

@@ -25,7 +25,7 @@ defineExpose({
 });
 </script>
 <template>
-  <dq-dialog v-model:show-dialog="showDialog" @close="close" :header="header">
+  <q-dialog v-model:show-dialog="showDialog" @close="close" :header="header">
     <ProcedureLite
       ref="procedureLite"
       :procedure-id="procedureId"
@@ -34,7 +34,7 @@ defineExpose({
       :record-ids="recordIds"
       @finish="emits('finish', $event)"
     />
-  </dq-dialog>
+  </q-dialog>
 </template>
 
 <style scoped lang="sass">

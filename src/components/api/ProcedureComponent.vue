@@ -45,7 +45,7 @@
   />
 </template>
 
-<script>
+<script lang="ts">
 import { ref, computed } from 'vue';
 import StartPage from 'components/procedure/pages/StartPage.vue';
 import ParamsPage from 'components/procedure/pages/ParamsPage.vue';

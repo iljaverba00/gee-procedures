@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import requests from "../modules/xsd-forms-admin/XsdFormAdminService.ts";
-import XsdFormAdmin from "../modules/xsd-forms-admin/XsdFormAdmin.vue";
+import ProcedureDialog from './../components/api/ProcedureDialog.vue';
+import { ref } from 'vue';
 
-const openFileDialog = (val: object)=>{
-  console.log(val)
-}
+const showDialog = ref(false);
 
 </script>
 <template>
-  <XsdFormAdmin :requests="requests()" @openFileDialog="openFileDialog"/>
+  <ProcedureDialog
+    v-model:show-dialog="showDialog"
+  />
 </template>
 
 <style>

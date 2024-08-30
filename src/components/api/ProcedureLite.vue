@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import ProcedureComponent from 'components/procedure/api/ProcedureComponent.vue';
+import ProcedureComponent from '@/components/api/ProcedureComponent.vue';
 import { useStore } from 'vuex';
 
 // Компонент, который позволяет выполнить процедуру

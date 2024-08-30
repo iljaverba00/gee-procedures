@@ -1,6 +1,6 @@
 <template>
   <q-card-section class="dialog-list1 full-width full-height">
-    <dq-scroll-area style="height: 100%">
+    <q-scroll-area style="height: 100%">
       <div v-if="downloadLinks.length > 0" class="text-subtitle1 finish-page-item">
         Файлы для скачивания:
       </div>
@@ -67,7 +67,7 @@
           </div>
         </div>
       </div>
-    </dq-scroll-area>
+    </q-scroll-area>
   </q-card-section>
 </template>
 

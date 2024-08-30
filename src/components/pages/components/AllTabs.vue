@@ -32,7 +32,7 @@
     :class="onlyImport ? '' : 'tab-panels'"
   >
     <q-tab-panel name="favorites">
-      <dq-list v-if="procedureFavorites?.length">
+      <q-list v-if="procedureFavorites?.length">
         <q-item-label header>{{ t('AllTabs.tabHeader') }}</q-item-label>
         <q-item
           v-for="fav of procedureFavorites"
@@ -45,7 +45,7 @@
         >
           <q-item-section>{{ fav.name }}</q-item-section>
           <q-item-section side>
-            <dq-btn
+            <q-btn
               v-if="configProcedure?.editFavorites"
               icon="delete"
               :text-color="procedureId === fav.id ? 'white' : ''"
@@ -57,12 +57,12 @@
               "
             >
               <q-tooltip>{{ t('AllTabs.delete') }}</q-tooltip>
-            </dq-btn>
+            </q-btn>
           </q-item-section>
         </q-item>
-      </dq-list>
+      </q-list>
       <q-separator v-if="reportsFavorites?.length && procedureFavorites.length" />
-      <dq-list v-if="reportsFavorites?.length">
+      <q-list v-if="reportsFavorites?.length">
         <q-item-label header>{{ t('AllTabs.itemHeader') }}</q-item-label>
         <q-item
           v-for="fav of reportsFavorites"
@@ -75,7 +75,7 @@
         >
           <q-item-section>{{ fav.name }}</q-item-section>
           <q-item-section side>
-            <dq-btn
+            <q-btn
               v-if="configProcedure?.editFavorites"
               icon="delete"
               :text-color="procedureId === fav.id ? 'white' : ''"
@@ -87,10 +87,10 @@
               "
             >
               <q-tooltip>{{ t('AllTabs.delete') }}</q-tooltip>
-            </dq-btn>
+            </q-btn>
           </q-item-section>
         </q-item>
-      </dq-list>
+      </q-list>
       <warning-in-center
         v-if="!(procedureFavorites?.length || reportsFavorites?.length)"
         :main-text="t('AllTabs.warning')"

@@ -1,7 +1,7 @@
-
 <script setup lang="ts">
+import ProcedureComponent from './ProcedureComponent.vue';
 import { ref, computed } from 'vue';
-import ProcedureComponent from 'components/procedure/api/ProcedureComponent.vue';
+
 import { YesNoDialog } from '@gee/dialog';
 import { useI18n } from 'vue-i18n';
 
@@ -66,7 +66,7 @@ function yesBtnAction() {
 </script>
 
 <template>
-  <dq-dialog
+  <q-dialog
     :header="onlyImport ? 'Процедуры импорта' : t('ProcedureDialog.header')"
     :show-dialog="showDialog"
     :no-btn-label="t('ProcedureDialog.noBtn')"
@@ -113,7 +113,7 @@ function yesBtnAction() {
         <q-tooltip>{{ t('ProcedureDialog.method.tooltip') }}</q-tooltip>
       </q-checkbox></template
     >
-  </dq-dialog>
+  </q-dialog>
   <yes-no-dialog
     v-model:show-dialog="showConfirmDialog"
     :title="t('ProcedureDialog.showDialog.title')"

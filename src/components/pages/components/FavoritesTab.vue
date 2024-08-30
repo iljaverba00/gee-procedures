@@ -1,5 +1,5 @@
 <template>
-  <dq-list v-if="procedureFavorites?.length">
+  <q-list v-if="procedureFavorites?.length">
     <q-item-label header>Процедуры</q-item-label>
     <q-item
       v-for="fav of procedureFavorites"
@@ -26,9 +26,9 @@
         />
       </q-item-section>
     </q-item>
-  </dq-list>
+  </q-list>
   <q-separator v-if="reportsFavorites?.length && procedureFavorites.length" />
-  <dq-list v-if="reportsFavorites?.length">
+  <q-list v-if="reportsFavorites?.length">
     <q-item-label header>Отчеты</q-item-label>
     <q-item
       v-for="fav of reportsFavorites"
@@ -55,7 +55,7 @@
         />
       </q-item-section>
     </q-item>
-  </dq-list>
+  </q-list>
   <warning-in-center
     v-if="!(procedureFavorites?.length || reportsFavorites?.length)"
     main-text="В избранном пока нет процедур или отчетов"
