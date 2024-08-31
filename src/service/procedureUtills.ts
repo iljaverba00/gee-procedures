@@ -1,4 +1,4 @@
-import { computed, inject, InjectionKey, provide, Ref, ref } from 'vue';
+import { computed } from 'vue';
 import {
   ppDialogType,
   ppSelectValue,
@@ -360,23 +360,5 @@ export function toIsoString(date: Date) {
     return (num < 10 ? '0' : '') + num;
   };
   return (date.getFullYear() + '-' + pad(date.getMonth() + 1) + '-' + pad(date.getDate()) + 'T' + pad(date.getHours()) + ':' + pad(date.getMinutes()) + ':' + pad(date.getSeconds()) + dif + pad(Math.floor(Math.abs(tzo) / 60)) + ':' + pad(Math.abs(tzo) % 60));
-}
-
-// Определение ключа с типом
-export const globalValidateKey: InjectionKey<Ref<() => void>> = Symbol('globalValidate');
-
-// Определение провайдера
-export function setupGlobalValidator() {
-  const globalValidate = ref(() => {
-  });
-  provide(globalValidateKey, globalValidate);
-}
-
-// Добавление иньекции в компонент
-export function setupComponentValidator(callback: () => void) {
-  const inj = inject(globalValidateKey);
-  if (inj) {
-    inj.value = callback;
-  }
 }
 

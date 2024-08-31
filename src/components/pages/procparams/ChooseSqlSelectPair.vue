@@ -2,8 +2,8 @@
 import { defineComponent, ref } from 'vue';
 import { rulesProcedureParams } from '../../../service/procedureUtills.ts';
 import requests from '../../../service/requests.ts';
-import { setupComponentValidator } from '../../../service/procedureUtills.ts';
 import { QSelect } from 'quasar';
+import { setupComponentValidator } from '../../../service/providerInjection.ts';
 
 export default defineComponent({
   name: 'ChooseSqlSelectPair',

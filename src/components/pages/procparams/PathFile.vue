@@ -1,10 +1,11 @@
 <script setup lang="ts">
 
 import { onMounted, ref, toRefs } from 'vue';
-import { rulesProcedureParams, setupComponentValidator } from '../../../service/procedureUtills.ts';
+import { rulesProcedureParams } from '../../../service/procedureUtills.ts';
 // import SigningFileDialog from 'components/Files/SigningFileDialog.vue';
 import { QFile, ValidationRule } from 'quasar';
 import { ppDialogType } from '../../../service/types.ts';
+import { setupComponentValidator } from '../../../service/providerInjection.ts';
 
 const props = defineProps<{ modelValue: any }>();
 const { modelValue } = toRefs(props);

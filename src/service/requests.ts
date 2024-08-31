@@ -12,7 +12,7 @@ export default {
     };
     return (await axios.post(url, data, config))?.data;
   },
-  uploadFileProcedure: (paramName: string, files: File[], processId: string, baseURL?: string) => {
+  uploadFileProcedure: (paramName: string, files: File[], processId?: string, baseURL?: string) => {
     const url = '/ActionServlet';
 
     const data = new FormData();

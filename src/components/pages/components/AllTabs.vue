@@ -1,6 +1,8 @@
 <script setup lang="ts">
 
 
+import { ref } from 'vue';
+
 const props = defineProps([
   'configProcedure',
   'procedureId',
@@ -11,7 +13,6 @@ const props = defineProps([
   'procedureFavoritesIds',
   'reportsFavoritesIds',
   'proceduresFact',
-  'propTab',
   'onlyImport',
 ]);
 
@@ -19,9 +20,12 @@ const emits = defineEmits([
   'updateSelected',
   'removeFavoriteRep',
   'removeFavoriteProc',
+  'update:propTab',
   'update:procedureFavoritesIds',
   'update:reportsFavoritesIds',
 ]);
+
+const propTab = ref('favorites');
 
 const checkProcedure = () => {
   return props.onlyImport
@@ -35,7 +39,7 @@ const checkProcedure = () => {
 <template>
   <q-tabs
     v-if="!props.configProcedure?.onlyFavorites && !props.onlyImport"
-    v-model="props.propTab"
+    v-model="propTab"
     dense
     class="text-grey"
     active-color="primary"
@@ -43,21 +47,21 @@ const checkProcedure = () => {
     align="justify"
     narrow-indicator
   >
-    <q-tab name="favorites" :label="t('AllTabs.favorites')" icon="star" />
+    <q-tab name="favorites" label="Избранное" icon="star" />
     <q-tab
       id="procedureMenuBtn"
       name="procedures"
-      :label="t('AllTabs.procedures')"
+      label="Процедуры"
       icon="display_settings"
     />
-    <q-tab name="reports" :label="t('AllTabs.reports')" icon="receipt" v-if="reports?.length" />
+    <q-tab name="reports" label="Отчеты" icon="receipt" v-if="reports?.length" />
   </q-tabs>
 
   <q-separator />
 
   <q-tab-panels
     id="tabPanels"
-    v-model="props.propTab"
+    v-model="propTab"
     animated
     swipeable
     vertical
@@ -67,7 +71,7 @@ const checkProcedure = () => {
   >
     <q-tab-panel name="favorites">
       <q-list v-if="procedureFavorites?.length">
-        <q-item-label header>{{ t('AllTabs.tabHeader') }}</q-item-label>
+        <q-item-label header>Процедуры</q-item-label>
         <q-item
           v-for="fav of procedureFavorites"
           :key="fav.id"
@@ -75,7 +79,7 @@ const checkProcedure = () => {
           dense
           active-class="my-menu-link"
           :active="procedureId === fav.id"
-          @click="$emit('updateSelected', t('AllTabs.tabClick'), fav.id)"
+          @click="$emit('updateSelected', 'Процедуры', fav.id)"
         >
           <q-item-section>{{ fav.name }}</q-item-section>
           <q-item-section side>
@@ -90,14 +94,14 @@ const checkProcedure = () => {
                 $emit('removeFavoriteProc', fav.id);
               "
             >
-              <q-tooltip>{{ t('AllTabs.delete') }}</q-tooltip>
+              <q-tooltip>Удалить из избранных</q-tooltip>
             </q-btn>
           </q-item-section>
         </q-item>
       </q-list>
       <q-separator v-if="reportsFavorites?.length && procedureFavorites.length" />
       <q-list v-if="reportsFavorites?.length">
-        <q-item-label header>{{ t('AllTabs.itemHeader') }}</q-item-label>
+        <q-item-label header>Отчеты</q-item-label>
         <q-item
           v-for="fav of reportsFavorites"
           :key="fav.id"
@@ -105,7 +109,7 @@ const checkProcedure = () => {
           dense
           active-class="my-menu-link"
           :active="procedureId === fav.id"
-          @click="$emit('updateSelected', t('AllTabs.itemClick'), fav.id)"
+          @click="$emit('updateSelected', 'Отчеты', fav.id)"
         >
           <q-item-section>{{ fav.name }}</q-item-section>
           <q-item-section side>
@@ -120,17 +124,23 @@ const checkProcedure = () => {
                 $emit('removeFavoriteRep', fav.id);
               "
             >
-              <q-tooltip>{{ t('AllTabs.delete') }}</q-tooltip>
+              <q-tooltip>Удалить из избранных</q-tooltip>
             </q-btn>
           </q-item-section>
         </q-item>
       </q-list>
-      <warning-in-center
-        v-if="!(procedureFavorites?.length || reportsFavorites?.length)"
-        :main-text="t('AllTabs.warning')"
-        :button-text="t('AllTabs.warningButton')"
-        @buttonClick="props.propTab = 'procedures'"
-      />
+
+      <div v-if="!(procedureFavorites?.length || reportsFavorites?.length)"
+           style="height: 100%; user-select: none">
+        <div class="text-subtitle1 absolute-center" :style="`font-size:1rem`">
+          <div style="user-select: none; text-align: center">В избранном пока нет процедур или отчетов</div>
+          <div style="display: flex; justify-content: center; align-items: center">
+            <q-btn rounded @click="propTab = 'procedures'" color="primary" text-color="white">
+              Добавить
+            </q-btn>
+          </div>
+        </div>
+      </div>
     </q-tab-panel>
 
     <q-tab-panel name="procedures">
@@ -145,7 +155,7 @@ const checkProcedure = () => {
         @update:ticked="$emit('update:procedureFavoritesIds', $event)"
         label-key="name"
         selected-color="primary"
-        @update:selected="$emit('updateSelected', t('AllTabs.treeProcedure'), $event)"
+        @update:selected="$emit('updateSelected', 'Процедуры', $event)"
       >
         <template v-slot:default-header="prop">
           <div
@@ -184,7 +194,7 @@ const checkProcedure = () => {
         @update:ticked="$emit('update:procedureFavoritesIds', $event)"
         label-key="name"
         selected-color="primary"
-        @update:selected="$emit('updateSelected', t('AllTabs.treeProcedure'), $event)"
+        @update:selected="$emit('updateSelected', 'Процедуры', $event)"
       >
         <template v-slot:default-header="prop">
           <div
@@ -224,7 +234,7 @@ const checkProcedure = () => {
         @update:ticked="$emit('update:reportsFavoritesIds', $event)"
         label-key="name"
         selected-color="primary"
-        @update:selected="$emit('updateSelected', t('AllTabs.treeReport'), $event)"
+        @update:selected="$emit('updateSelected', 'Отчеты', $event)"
       >
         <template v-slot:default-header="prop">
           <div

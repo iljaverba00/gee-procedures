@@ -1,6 +1,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import { rulesProcedureParams, setupComponentValidator } from '../../../service/procedureUtills.ts';
+import { rulesProcedureParams } from '../../../service/procedureUtills.ts';
+import { setupComponentValidator } from '../../../service/providerInjection.ts';
 
 export default defineComponent({
   name: 'ChooseGroupedList',
