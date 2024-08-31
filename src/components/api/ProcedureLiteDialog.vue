@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { toRefs, ref } from 'vue';
-import ProcedureLite from 'components/procedure/api/ProcedureLite.vue';
+import ProcedureLite from './ProcedureLite.vue';
 
 const showDialog = ref(false);
 
@@ -19,7 +19,7 @@ defineExpose({
     }, 1000);
   },
   finish: () => {
-    procedureLite.value.finish();
+    procedureLite.value?.finish();
     showDialog.value = false;
   },
 });

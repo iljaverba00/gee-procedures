@@ -1,64 +1,15 @@
-<template>
-  <progress-page
-    v-if="currentPage === 'PROGRESS_PAGE'"
-    :stage-control="currentState.stageControl"
-  />
-
-  <start-page
-    v-if="currentPage === 'START_PAGE'"
-    v-model:procedure-id="procedureId"
-    v-model:procedure-name="procedureName"
-    v-model:procedure-group="procedureGroup"
-    :propTab="propTab"
-    :onlyImport="onlyImport"
-  />
-
-  <params-page
-    v-if="currentPage === 'PARAMS_PAGE'"
-    v-model:procedure-params="currentState.pp"
-    v-model:procedure-name="procedureName"
-    v-model:procedure-group="procedureGroup"
-    v-model:procedure-id="procedureId"
-  />
-
-  <dialog-page
-    v-if="currentPage === 'DIALOG_PAGE'"
-    :dialog-data="currentState.dialogData"
-    @press="nextPage"
-  />
-
-  <finish-page
-    v-if="currentPage === 'FINISH_PAGE'"
-    :download-links="currentState.downloadLinks"
-    :messages="currentState.messages"
-    :post-process="currentState.postProcess"
-    :process-id="processId"
-    @updateTable="updateTable"
-  />
-
-  <error-page v-if="currentPage === 'ERROR_PAGE'" :msg="currentState.error" :name="procedureName" />
-
-  <custom-dialog-page
-    v-if="currentPage === 'CUSTOM_DIALOG_PAGE'"
-    :data="currentState.customDialogData"
-    @press="nextPage"
-  />
-</template>
-
 <script lang="ts">
 import { ref, computed } from 'vue';
-import StartPage from 'components/procedure/pages/StartPage.vue';
-import ParamsPage from 'components/procedure/pages/ParamsPage.vue';
-import FinishPage from 'components/procedure/pages/FinishPage.vue';
-import ProgressPage from 'components/procedure/pages/ProgreesPage.vue';
-import ErrorPage from 'components/procedure/pages/ErrorPage.vue';
+import StartPage from '../pages/StartPage.vue';
+import ParamsPage from '../pages/ParamsPage.vue';
+import FinishPage from '../pages/FinishPage.vue';
+import ProgressPage from '../pages/ProgreesPage.vue';
+import ErrorPage from '../pages/ErrorPage.vue';
 import { getTableInstanceByName, makeBackendJson } from 'src/services/utils.js';
-import DialogPage from 'components/procedure/pages/DialogPage.vue';
-import ProcedureAPI from 'components/procedure/api/ProcedureAPI.js';
+import DialogPage from '../pages/DialogPage.vue';
+import ProcedureAPI from './ProcedureAPI.ts';
 import { getFactDescriptor, getPkValues } from 'src/services/FactDscrValue';
-import { useStore } from 'vuex';
-import CustomDialogPage from 'components/procedure/pages/CustomDialogPage.vue';
-import { triggerNegative } from 'src/services/Notification.service';
+import CustomDialogPage from '../pages/CustomDialogPage.vue';
 
 export default {
   name: 'ProcedureComponent',
@@ -231,7 +182,7 @@ export default {
 
       const successRun = (procId) => {
         if (!procId) {
-          triggerNegative('Непредвиденная ошибка запуска процедуры');
+          console.log('Непредвиденная ошибка запуска процедуры')
           return;
         }
         this.processId = procId;
@@ -283,3 +234,50 @@ export default {
   },
 };
 </script>
+
+<template>
+  <progress-page
+    v-if="currentPage === 'PROGRESS_PAGE'"
+    :stage-control="currentState.stageControl"
+  />
+
+  <start-page
+    v-if="currentPage === 'START_PAGE'"
+    v-model:procedure-id="procedureId"
+    v-model:procedure-name="procedureName"
+    v-model:procedure-group="procedureGroup"
+    :propTab="propTab"
+    :onlyImport="onlyImport"
+  />
+
+  <params-page
+    v-if="currentPage === 'PARAMS_PAGE'"
+    v-model:procedure-params="currentState.pp"
+    v-model:procedure-name="procedureName"
+    v-model:procedure-group="procedureGroup"
+    v-model:procedure-id="procedureId"
+  />
+
+  <dialog-page
+    v-if="currentPage === 'DIALOG_PAGE'"
+    :dialog-data="currentState.dialogData"
+    @press="nextPage"
+  />
+
+  <finish-page
+    v-if="currentPage === 'FINISH_PAGE'"
+    :download-links="currentState.downloadLinks"
+    :messages="currentState.messages"
+    :post-process="currentState.postProcess"
+    :process-id="processId"
+    @updateTable="updateTable"
+  />
+
+  <error-page v-if="currentPage === 'ERROR_PAGE'" :msg="currentState.error" :name="procedureName" />
+
+  <custom-dialog-page
+    v-if="currentPage === 'CUSTOM_DIALOG_PAGE'"
+    :data="currentState.customDialogData"
+    @press="nextPage"
+  />
+</template>

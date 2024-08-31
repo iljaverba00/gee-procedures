@@ -1,3 +1,70 @@
+<script lang="ts">
+import { defineComponent, ref } from 'vue';
+import { rulesProcedureParams, setupComponentValidator } from '../../../service/procedureUtills.ts';
+
+export default defineComponent({
+  name: 'ChooseList',
+  emits: ['update:modelValue', 'updateSelected'],
+  props: ['modelValue'],
+  data() {
+    const rules = rulesProcedureParams();
+    return {
+      rules,
+    };
+  },
+  setup(props, { emit }) {
+    const model = ref<any[]>([]);
+
+    if (props.modelValue) {
+      for (let i = 0; i < props.modelValue?.defaultValue?.length; i++) {
+        model.value.push(props.modelValue.chooseSet[props.modelValue.defaultValue[i]]);
+      }
+    }
+    //const emitVal = arr.map(val => this.modelValue.chooseSet.indexOf(val))
+    emit('updateSelected', props.modelValue?.defaultValue);
+
+    const filterOptions = ref(props.modelValue.chooseSet.concat([]));
+
+    const refChooseList = ref();
+    return {
+      refChooseList,
+      marginBottom: ref(''),
+      model,
+      filterOptions,
+      filterFn(val: string, update: (f: () => void) => void) {
+        if (val === '') {
+          update(() => {
+            filterOptions.value = props.modelValue.chooseSet.concat([]);
+          });
+          return;
+        }
+        update(() => {
+          let needle = val.toLowerCase();
+          filterOptions.value = props.modelValue.chooseSet
+            .concat([])
+            .filter((item: string) => item.toLowerCase().indexOf(needle) > -1);
+        });
+      },
+    };
+  },
+  created() {
+    setupComponentValidator(() => {
+      this.refChooseList?.validate();
+    });
+  },
+  methods: {
+    update(arr: string[]) {
+      const emitVal = arr.map((val: string) => this.modelValue.chooseSet.indexOf(val));
+      this.$emit('updateSelected', emitVal);
+    },
+    getRules() {
+      if (this.modelValue.nullable) this.marginBottom = 'margin-bottom: 20px';
+      return this.modelValue.nullable ? undefined : this.rules.chooseList;
+    },
+  },
+});
+</script>
+
 <template>
   <q-select
     ref="refChooseList"
@@ -18,82 +85,8 @@
   >
     <template v-slot:no-option>
       <q-item>
-        <q-item-section class="text-grey q-ma-xs"> Ничего нет :( </q-item-section>
+        <q-item-section class="text-grey q-ma-xs"> Ничего нет :(</q-item-section>
       </q-item>
     </template>
   </q-select>
 </template>
-
-<script>
-import { defineComponent, ref } from 'vue';
-import { rulesProcedureParams } from 'components/procedure/procedureUtills';
-
-export default defineComponent({
-  name: 'ChooseList',
-  emits: ['update:modelValue', 'updateSelected'],
-  props: ['modelValue'],
-  data() {
-    const rules = rulesProcedureParams();
-    return {
-      rules,
-      check() {
-        this.$refs.refChooseList?.validate();
-      },
-    };
-  },
-  setup(props, { emit }) {
-    const model = ref([]);
-
-    if (props.modelValue) {
-      for (let i = 0; i < props.modelValue?.defaultValue?.length; i++) {
-        model.value.push(props.modelValue.chooseSet[props.modelValue.defaultValue[i]]);
-      }
-    }
-    //const emitVal = arr.map(val => this.modelValue.chooseSet.indexOf(val))
-    emit('updateSelected', props.modelValue?.defaultValue);
-
-    const filterOptions = ref(props.modelValue.chooseSet.concat([]));
-
-    return {
-      marginBottom: ref(''),
-      model,
-      unsubscribe: ref(),
-      filterOptions,
-      filterFn(val, update) {
-        if (val === '') {
-          update(() => {
-            filterOptions.value = props.modelValue.chooseSet.concat([]);
-          });
-          return;
-        }
-        update(() => {
-          let needle = val.toLowerCase();
-          filterOptions.value = props.modelValue.chooseSet
-            .concat([])
-            .filter((item) => item.toLowerCase().indexOf(needle) > -1);
-        });
-      },
-    };
-  },
-  created() {
-    this.unsubscribe = this.$store.subscribe((mutation) => {
-      if (mutation.type === 'modules/updateProcedureCheck') {
-        this.check();
-      }
-    });
-  },
-  beforeUnmount() {
-    this.unsubscribe();
-  },
-  methods: {
-    update(arr) {
-      const emitVal = arr.map((val) => this.modelValue.chooseSet.indexOf(val));
-      this.$emit('updateSelected', emitVal);
-    },
-    getRules() {
-      if (this.modelValue.nullable) this.marginBottom = 'margin-bottom: 20px';
-      return this.modelValue.nullable ? null : this.rules.chooseList;
-    },
-  },
-});
-</script>

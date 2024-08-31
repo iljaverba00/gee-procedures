@@ -1,7 +1,41 @@
+<script setup lang="ts">
+
+
+const props = defineProps([
+  'configProcedure',
+  'procedureId',
+  'procedureFavorites',
+  'reportsFavorites',
+  'reports',
+  'procedures',
+  'procedureFavoritesIds',
+  'reportsFavoritesIds',
+  'proceduresFact',
+  'propTab',
+  'onlyImport',
+]);
+
+const emits = defineEmits([
+  'updateSelected',
+  'removeFavoriteRep',
+  'removeFavoriteProc',
+  'update:procedureFavoritesIds',
+  'update:reportsFavoritesIds',
+]);
+
+const checkProcedure = () => {
+  return props.onlyImport
+    ? props.procedures.filter((v: { name: string }) => v.name == 'Импорт из ...')
+    : props.procedures;
+};
+
+
+</script>
+
 <template>
   <q-tabs
-    v-if="!configProcedure.onlyFavorites & !onlyImport"
-    v-model="tabModel"
+    v-if="!props.configProcedure?.onlyFavorites && !props.onlyImport"
+    v-model="props.propTab"
     dense
     class="text-grey"
     active-color="primary"
@@ -23,7 +57,7 @@
 
   <q-tab-panels
     id="tabPanels"
-    v-model="tabModel"
+    v-model="props.propTab"
     animated
     swipeable
     vertical
@@ -95,7 +129,7 @@
         v-if="!(procedureFavorites?.length || reportsFavorites?.length)"
         :main-text="t('AllTabs.warning')"
         :button-text="t('AllTabs.warningButton')"
-        @buttonClick="tabModel = 'procedures'"
+        @buttonClick="props.propTab = 'procedures'"
       />
     </q-tab-panel>
 
@@ -221,52 +255,11 @@
   </q-tab-panels>
 </template>
 
-<script>
-import { useI18n } from 'vue-i18n';
-
-export default {
-  name: 'Tabs',
-  props: [
-    'configProcedure',
-    'procedureId',
-    'procedureFavorites',
-    'reportsFavorites',
-    'reports',
-    'procedures',
-    'procedureFavoritesIds',
-    'reportsFavoritesIds',
-    'proceduresFact',
-    'propTab',
-    'onlyImport',
-  ],
-  emits: [
-    'updateSelected',
-    'removeFavoriteRep',
-    'removeFavoriteProc',
-    'update:procedureFavoritesIds',
-    'update:reportsFavoritesIds',
-  ],
-  data() {
-    const { t } = useI18n({ useScope: 'global' });
-    return {
-      t,
-      tabModel: this.propTab,
-    };
-  },
-  methods: {
-    checkProcedure() {
-      return this.onlyImport
-        ? this.procedures.filter((v) => v.name == 'Импорт из ...')
-        : this.procedures;
-    },
-  },
-};
-</script>
-
 <style scoped lang="sass">
 :deep(.q-tree__tickbox)
   margin-right: 4px
   display: none !important
+
 .tab-panels
   height: calc(100% - 55px)
 </style>

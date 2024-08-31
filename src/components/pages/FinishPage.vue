@@ -1,3 +1,40 @@
+<script lang="ts">
+import { openURL } from 'quasar';
+import { defineComponent } from 'vue';
+import requests from '../../service/requests.ts';
+import { iDownloadLink } from '../../service/types.ts';
+
+export default defineComponent({
+  name: 'FinishPage',
+  props: {
+    downloadLinks: {
+      type: Array<iDownloadLink>,
+      required: true,
+      default: [],
+    },
+    messages: {
+      type: Array<string>,
+      required: true,
+      default: [],
+    },
+    postProcess: {
+      type: Object,
+    },
+    processId: {
+      type: String,
+    },
+  },
+  methods: {
+    downloadLink(file: iDownloadLink) {
+      openURL(requests.getDownloadLink(file.fileUid, file.fileName, this.processId));
+    },
+    downloadALL() {
+      openURL(requests.getDownloadAllLink(this.processId));
+    },
+  },
+});
+</script>
+
 <template>
   <q-card-section class="dialog-list1 full-width full-height">
     <q-scroll-area style="height: 100%">
@@ -16,7 +53,7 @@
         />
       </div>
 
-      <div v-for="link of this.downloadLinks" :key="link" class="finish-page-item">
+      <div v-for="link of downloadLinks" :key="link.fileUid" class="finish-page-item">
         <q-btn
           unelevated
           rounded
@@ -36,7 +73,7 @@
       </div>
 
       <div
-        v-for="message of this.messages"
+        v-for="message of messages"
         :key="message"
         class="bg-orange-1 finish-page-item"
         style="padding: 5px"
@@ -71,54 +108,13 @@
   </q-card-section>
 </template>
 
-<script>
-import { openURL } from 'quasar';
-import { defineComponent } from 'vue';
-import { procedureRequests } from 'src/services/Data.service.js';
-
-export default defineComponent({
-  name: 'FinishPage',
-  props: {
-    downloadLinks: {
-      type: Array,
-      required: true,
-      default: (_) => [],
-      default: (_) => [],
-    },
-    messages: {
-      type: Array,
-      required: true,
-      default: (_) => [],
-      default: (_) => [],
-    },
-    postProcess: {
-      type: Object,
-    },
-    processId: {
-      type: String,
-      type: Object,
-    },
-    processId: {
-      type: String,
-    },
-  },
-  methods: {
-    downloadLink(file) {
-      openURL(procedureRequests.getDownloadLink(file.fileUid, file.fileName, this.processId));
-    },
-    downloadALL() {
-      openURL(procedureRequests.getDownloadAllLink(this.processId));
-    },
-  },
-});
-</script>
-
 <style>
 .dialog-list1 {
   overflow-y: hidden;
   overflow-x: hidden;
   user-select: none;
 }
+
 .finish-page-item {
   margin-bottom: 8px;
 }

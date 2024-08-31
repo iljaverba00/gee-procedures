@@ -1,14 +1,12 @@
-<template>
-  <div style="margin-bottom: 20px" v-html="modelValue.description" />
-</template>
+<script setup lang="ts">
+import { ProcedureParam } from '../../../service/types.ts';
 
-<script>
-import { defineComponent } from 'vue';
-
-export default defineComponent({
-  name: 'Message',
-  props: ['modelValue'],
-});
+const props = defineProps<{ modelValue: ProcedureParam }>();
 </script>
 
-<style></style>
+<template>
+  <div style="margin-bottom: 20px" v-html="props.modelValue.description" />
+</template>
+
+
+

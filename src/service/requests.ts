@@ -1,126 +1,130 @@
-import axios, {AxiosRequestConfig} from "axios";
+import axios, { AxiosRequestConfig } from 'axios';
+import { SqlProcedureType } from './RequestTypes.ts';
 
 
 export default {
-    sqlProcedure: async (bankId: number, sql: string, text: string, innerParams: string, baseURL?: string) => {
-        const url = `/api/procedures/banks/${bankId}/CHOOSE_SQL_SELECT_PAIR`;
-        const data = {sql, text, innerParams};
-        const config: AxiosRequestConfig = {
-            baseURL,
-            headers: {'Content-Type': 'application/json'}
-        };
-        return await axios.post(url, data, config);
-    },
-    uploadFileProcedure: async (paramName, files, processId) => {
-        let formData = new FormData();
-        const flatFiles = files.flat();
-        for (let i = 0; i < flatFiles.length; i++) {
-            formData.append('files[' + i + ']', flatFiles[i]);
-        }
-        await api.post('/ActionServlet?action=wl_base_reports&mode=uploadFile', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
-            params: {
-                PROCESS_ID: processId,
-                PROC_PARAM: paramName,
-            },
-        });
-    },
-    customDialogAnswerProcedure: async (value, processId) => {
-        const params = {
-            action: 'wl_base_reports',
-            PROCESS_ID: processId,
-            type_message: 'CUSTOM_DIALOG_ANSWER',
-        };
-        return await api.post('/ActionServlet', value, {
-            params,
-            headers: {
-                'Content-Type': 'application/json;charset=utf-8',
-            },
-        });
-    },
-    dialogAnswerProcedure: async (value, processId) => {
-        return await requestApi.get({
-            url: '/ActionServlet?action=wl_base_reports&type_message=DIALOG_ANSWER',
-            options: {
-                params: {
-                    result: value,
-                    PROCESS_ID: processId,
-                },
-            },
-        });
-    },
-    requestProcedures: async (serverUrl, datamode, fdv, resolve) => {
-        return await requestApi.get({
-            url: `${serverUrl ? serverUrl : ''}/ActionServlet?action=wl_reports`,
-            options: {params: {datamode, fdv}},
-            resolve,
-        });
-    },
+  sqlProcedure: async (bankId: number, sql: string, text: string, innerParams: string, baseURL?: string): Promise<SqlProcedureType> => {
+    const url = `/api/procedures/banks/${bankId}/CHOOSE_SQL_SELECT_PAIR`;
+    const data = { sql, text, innerParams };
+    const config: AxiosRequestConfig = {
+      baseURL,
+      headers: { 'Content-Type': 'application/json' },
+    };
+    return (await axios.post(url, data, config))?.data;
+  },
+  uploadFileProcedure: (paramName: string, files: File[], processId: string, baseURL?: string) => {
+    const url = '/ActionServlet';
 
-    startProcedure: async (procId, factId, cellId, method, param) => {
-        var url = '/ActionServlet?action=wl_base_reports';
-        if (method === 'selected') {
-            param && (url = url + '&pkValue=' + param.join('&pkValue='));
-        } else if (method === 'all') {
-            url = url + '&fullFilter=' + encodeURI(param);
-        }
-        return await requestApi.get({
-            url,
-            options: {
-                params: {
-                    procId,
-                    factId,
-                    cellId: cellId ? cellId : undefined,
-                },
-            },
-        });
-    },
-    continueProcedure: async (processId) => {
-        return await requestApi.get({
-            url:
-                '/ActionServlet?action=wl_base_reports&type_message=EMPTY&result=null' +
-                '&PROCESS_ID=' +
-                processId,
-        });
-    },
+    const data = new FormData();
+    const flatFiles = files.flat();
+    for (let i = 0; i < flatFiles.length; i++) {
+      data.append('files[' + i + ']', flatFiles[i]);
+    }
 
-    parametersPushProcedure: async (body, processId) => {
-        return await requestApi.post({
-            url: '/ActionServlet',
-            body,
-            options: {
-                params: {
-                    action: 'wl_base_reports',
-                    PROCESS_ID: processId,
-                    type_message: 'PARAMETERS_ANSWER',
-                },
-                headers: {
-                    'Content-Type': 'application/json;charset=utf-8',
-                },
-            },
-        });
-    },
-    getDownloadLink: (fileUid, fileName, processId, serverUrl = PUBLIC_PATH) => {
-        return (
-            serverUrl +
-            '/ActionServlet?action=wl_base_reports' +
-            '&fileUid=' +
-            fileUid +
-            '&fileName=' +
-            fileName +
-            '&PROCESS_ID=' +
-            processId
-        );
-    },
-    getDownloadAllLink: (processId, serverUrl = PUBLIC_PATH) => {
-        return (
-            serverUrl +
-            '/ActionServlet?action=wl_base_reports' +
-            '&allFiles=true' +
-            '&PROCESS_ID=' +
-            processId
-        );
-    },
+    const config: AxiosRequestConfig = {
+      baseURL,
+      headers: { 'Content-Type': 'multipart/form-data' },
+      params: {
+        action: 'wl_base_reports',
+        mode: 'uploadFile',
+        PROCESS_ID: processId,
+        PROC_PARAM: paramName,
+      },
+    };
+    void axios.post(url, data, config);
+  },
+  customDialogAnswerProcedure: async (value: object, processId: string, baseURL?: string) => {
+    const url = '/ActionServlet';
+    const config = {
+      baseURL,
+      params: {
+        action: 'wl_base_reports',
+        PROCESS_ID: processId,
+        type_message: 'CUSTOM_DIALOG_ANSWER',
+      },
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8',
+      },
+    };
+    return await axios.post(url, value, config);
+  },
+  dialogAnswerProcedure: async (value: string, processId: string, baseURL?: string) => {
+    const url = '/ActionServlet';
+    const config = {
+      baseURL,
+      params: {
+        action: 'wl_base_reports',
+        type_message: 'DIALOG_ANSWER',
+        result: value,
+        PROCESS_ID: processId,
+      },
+    };
+    return await axios.get(url, config);
+  },
+  requestProcedures: async (datamode: string, fdv: string, baseURL?: string) => {
+    const url = '/ActionServlet';
+    const config = {
+      baseURL,
+      params: {
+        action: 'wl_reports',
+        datamode,
+        fdv,
+      },
+    };
+    return await axios.get(url, config);
+  },
+
+  startProcedure: async (procId: string, factId: string, cellId?: string, method?: string, param?: string[] | string, baseURL?: string) => {
+    let url = '/ActionServlet';
+    if (method === 'selected' && param && Array.isArray(param)) {
+      url += param.map(p => `&pkValue=${p}`).join();
+    } else if (method === 'all' && param && typeof param === 'string') {
+      url += '&fullFilter=' + encodeURI(param);
+    }
+
+    const config = {
+      baseURL,
+      params: {
+        action: 'wl_base_reports',
+        procId,
+        factId,
+        cellId: cellId ? cellId : undefined,
+      },
+    };
+    return await axios.get(url, config);
+  },
+  continueProcedure: async (processId: string, baseURL?: string) => {
+    const url = `/ActionServlet`;
+    const config = {
+      baseURL,
+      params: {
+        action: 'wl_base_reports',
+        type_message: 'EMPTY',
+        result: null,
+        PROCESS_ID: processId,
+      },
+    };
+    return await axios.get(url, config);
+  },
+  parametersPushProcedure: async (body: object, processId: string, baseURL?: string) => {
+    const url = '/ActionServlet';
+    const config = {
+      baseURL,
+      params: {
+        action: 'wl_base_reports',
+        PROCESS_ID: processId,
+        type_message: 'PARAMETERS_ANSWER',
+      },
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8',
+      },
+    };
+    return await axios.post(url, body, config);
+  },
+  getDownloadLink: (fileUid?: string, fileName?: string, processId?: string, baseURL?: string) => {
+    return `${baseURL ?? ''}/ActionServlet?action=wl_base_reports&fileUid=${fileUid}&fileName=${fileName}&PROCESS_ID=${processId}`
+  },
+  getDownloadAllLink: (processId?: string, baseURL?: string) => {
+    return `${baseURL ?? ''}/ActionServlet?action=wl_base_reports&allFiles=true&PROCESS_ID=${processId}`
+  },
 };

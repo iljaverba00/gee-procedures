@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import ProcedureComponent from '@/components/api/ProcedureComponent.vue';
-import { useStore } from 'vuex';
+import ProcedureComponent from './ProcedureComponent.vue';
 
 // Компонент, который позволяет выполнить процедуру
 
 import { ref, onBeforeUnmount, computed } from 'vue';
-const store = useStore();
 
 const props = defineProps(['procedureId', 'factId', 'cellId', 'recordIds']);
 

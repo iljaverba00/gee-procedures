@@ -1,3 +1,17 @@
+<script lang="ts">
+import { ref } from 'vue';
+
+export default {
+  name: 'MatchingFields',
+  setup() {
+    return {
+      model: ref(null),
+    };
+  },
+  props: ['modelValue'],
+};
+</script>
+
 <template>
   <div class="bg-green-1" style="margin-bottom: 20px; padding: 16px">
     <div style="margin-bottom: 16px; font-weight: bold">{{ modelValue?.description }}</div>
@@ -17,16 +31,3 @@
     </div>
   </div>
 </template>
-
-<script>
-import { ref } from 'vue';
-export default {
-  name: 'MatchingFields',
-  setup() {
-    return {
-      model: ref(null),
-    };
-  },
-  props: ['modelValue'],
-};
-</script>

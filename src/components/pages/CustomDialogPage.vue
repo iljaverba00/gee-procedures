@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { toRefs } from 'vue';
 import ChangeStatusInformationRegisterUI from 'components/procedure/pages/dialogs/ChangeStatusInformationRegisterUI.vue';
 import EiszsUI from 'components/procedure/pages/dialogs/EiszsUI.vue';

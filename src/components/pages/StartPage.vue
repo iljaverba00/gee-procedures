@@ -27,7 +27,7 @@
   />
 </template>
 
-<script>
+<script lang="ts">
 import { computed, defineComponent, ref } from 'vue';
 import { useStore } from 'vuex';
 import Tabs from 'src/components/procedure/pages/components/AllTabs.vue';

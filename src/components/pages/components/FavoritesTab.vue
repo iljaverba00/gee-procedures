@@ -1,76 +1,75 @@
+<script setup lang="ts">
+
+const props = defineProps(['configProcedure', 'procedureId', 'procedureFavorites', 'reportsFavorites']);
+const emits = defineEmits(['updateSelected', 'removeFavoriteRep', 'removeFavoriteProc']);
+
+</script>
+
 <template>
-  <q-list v-if="procedureFavorites?.length">
+  <q-list v-if="props.procedureFavorites?.length">
     <q-item-label header>Процедуры</q-item-label>
     <q-item
-      v-for="fav of procedureFavorites"
+      v-for="fav of props.procedureFavorites"
       :key="fav.id"
       clickable
       dense
       active-class="my-menu-link"
-      :active="procedureId === fav.id"
-      @click="$emit('updateSelected', 'Процедуры', fav.id)"
+      :active="props.procedureId === fav.id"
+      @click="emits('updateSelected', 'Процедуры', fav.id)"
     >
       <q-item-section>{{ fav.name }}</q-item-section>
       <q-item-section side>
         <q-btn
-          v-if="configProcedure?.editFavorites"
+          v-if="props.configProcedure?.editFavorites"
           icon="delete"
-          :text-color="procedureId === fav.id ? 'white' : ''"
+          :text-color="props.procedureId === fav.id ? 'white' : ''"
           flat
           round
           dense
           @click="
             $event.stopPropagation();
-            $emit('removeFavoriteProc', fav.id);
+            emits('removeFavoriteProc', fav.id);
           "
         />
       </q-item-section>
     </q-item>
   </q-list>
-  <q-separator v-if="reportsFavorites?.length && procedureFavorites.length" />
-  <q-list v-if="reportsFavorites?.length">
+  <q-separator v-if="props.reportsFavorites?.length && props.procedureFavorites.length" />
+  <q-list v-if="props.reportsFavorites?.length">
     <q-item-label header>Отчеты</q-item-label>
     <q-item
-      v-for="fav of reportsFavorites"
+      v-for="fav of props.reportsFavorites"
       :key="fav.id"
       clickable
       dense
       active-class="my-menu-link"
-      :active="procedureId === fav.id"
+      :active="props.procedureId === fav.id"
       @click="$emit('updateSelected', 'Отчеты', fav.id)"
     >
       <q-item-section>{{ fav.name }}</q-item-section>
       <q-item-section side>
         <q-btn
-          v-if="configProcedure?.editFavorites"
+          v-if="props.configProcedure?.editFavorites"
           icon="delete"
-          :text-color="procedureId === fav.id ? 'white' : ''"
+          :text-color="props.procedureId === fav.id ? 'white' : ''"
           flat
           round
           dense
           @click="
             $event.stopPropagation();
-            $emit('removeFavoriteRep', fav.id);
+            emits('removeFavoriteRep', fav.id);
           "
         />
       </q-item-section>
     </q-item>
   </q-list>
-  <warning-in-center
-    v-if="!(procedureFavorites?.length || reportsFavorites?.length)"
-    main-text="В избранном пока нет процедур или отчетов"
-  />
+  <div
+    v-if="!(props.procedureFavorites?.length || props.reportsFavorites?.length)"
+    style="height: 100%; user-select: none">
+    <div class="text-subtitle1 absolute-center" :style="`font-size:1rem`">
+      <div style="user-select: none; text-align: center">В избранном пока нет процедур или отчетов</div>
+    </div>
+  </div>
+
 </template>
 
-<script>
-import WarningInCenter from 'components/common/WarningInCenter.vue';
-
-export default {
-  name: 'Favorites',
-  components: { WarningInCenter },
-  props: ['configProcedure', 'procedureId', 'procedureFavorites', 'reportsFavorites'],
-  emits: ['updateSelected', 'removeFavoriteRep', 'removeFavoriteProc'],
-};
-</script>
-
-<style></style>

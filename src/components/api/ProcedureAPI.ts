@@ -1,85 +1,64 @@
-import { procedureRequests, getFactRecords } from 'src/services/Data.service';
+import requests from '../../service/requests.ts';
 import {
   generateProcedureParamActions,
   ProcedureParameters,
   ProcedurePostProcess,
   StageControl,
-} from 'components/procedure/procedureUtills';
-import { computed, ref } from 'vue';
-import { triggerNegative } from 'src/services/Notification.service';
-import { store } from 'src/store';
+} from '../../service/procedureUtills.ts';
+import { ref, watch, WatchStopHandle } from 'vue';
+import { ProcedureInstance, RunProcedure } from '../../service/types.ts';
+
 
 export default class ProcedureAPI {
-  procedureInstances = computed({
-    get: () => store.getters['modules/getProcedureInstances'],
-    set: (val) => store.commit('modules/updateProcedureInstances', val),
-  });
+  procedureInstance?: ProcedureInstance = undefined;
 
-  /**
-   * @param id {Number} идентификатор процедуры/отчета
-   * @param factId {String} идентификатор факта
-   * @param cellId {Number} идентификатор выбранной ячейки(cell) в факте
-   * @param selected {Array || Object} массив идентификаторов записей или фильтр, для факта
-   * @param callback {function} после запуска функция вернет processId,
-   * по которому можно получить этот процесс из vuex.
-   *
-   */
-  run(id, factId, cellId, selected, callback, updateTable) {
-    this.runP({ id, factId, cellId, selected, updateTable }, callback);
-  }
-
-  runP(params, callback) {
-    const procedure = new ProcedureRunner(params);
+  run(params: RunProcedure) {
+    const instance = ProcedureRunner(params);
     (async () => {
-      const processId = await procedure.run();
+      const processId = await instance.run();
       if (!processId) return null;
-      this.procedureInstances.value = { [processId]: procedure };
-      callback(processId);
+      this.procedureInstance = { processId, instance };
+      params?.callback?.(processId);
     })();
   }
 
-  stop(processId) {
-    this.procedureInstances.value[processId].finish();
-    delete this.procedureInstances.value[processId];
+  stop() {
+    this.procedureInstance?.instance?.finish();
+    this.procedureInstance = undefined;
   }
 
-  getProcedureInstance(processId) {
-    return this.procedureInstances[processId];
+  getProcedureInstance() {
+    return this.procedureInstance?.instance;
   }
 
-  // Если в процедуре нужно заполнить параметры, вызовется resolve
-  subscribeParams(processId, resolve) {
-    const proc = this.procedureInstances.value[processId];
-    let uns;
+  subscribeParams(resolve: () => void) {
+    const proc = this.procedureInstance?.instance;
+    let uns: WatchStopHandle | undefined = undefined;
     proc &&
-      resolve &&
-      (uns = watch(proc.stateControl.name, (val) => {
-        if (val === 'PARAMS_PAGE') {
-          resolve();
-          uns();
-        }
-      }));
+    resolve &&
+    (uns = watch(proc.stateControl.name, (val) => {
+      if (val === 'PARAMS_PAGE') {
+        resolve();
+        uns?.();
+      }
+    }));
     return !!uns;
   }
 }
 
-export function ProcedureRunner({ id, factId, cellId, selected, updateTable }) {
+export function ProcedureRunner({ id, factId, cellId, selected, updateTable }: RunProcedure) {
   const processId = ref(null);
   const finished = ref(false);
   const maxTimeout = 1000 * 30;
   let timeout = 0;
 
-  const stateControl = new StateControl();
+  const stateControl = StateControl();
 
-  const groupingFacts = computed((_) => store.getters['modules/getGroupingFacts']);
-  const procedureCheck = computed({
-    get: () => store.getters['modules/getProcedureCheck'],
-    set: (val) => store.commit('modules/updateProcedureCheck', val),
-  });
+  const procedureCheck = ref(false);
 
   const run = async () => {
     const method = Array.isArray(selected) ? 'selected' : 'all';
-    const result = await procedureRequests.startProcedure(id, factId, cellId, method, selected);
+    const result = await requests.startProcedure(id, factId, cellId, method, selected);
     if (!result?.PROCESS_ID) return null; // Если не получилось запустить процедуру
     processId.value = result.PROCESS_ID;
     await domessage(result);
@@ -98,83 +77,84 @@ export function ProcedureRunner({ id, factId, cellId, selected, updateTable }) {
       timeout = 0;
       const pps = procParams.getParamsFiles();
       for await (const par of pps) {
-        await procedureRequests.uploadFileProcedure(par.name, par.selectValue, processId.value);
+        await requests.uploadFileProcedure(par.name, par.selectValue, processId.value);
       }
       const params = procParams.getSelectedValueParams();
-      await procedureRequests.parametersPushProcedure(params, processId.value);
+      await requests.parametersPushProcedure(params, processId.value);
     } else {
-      triggerNegative('Заполните параметры для продолжения');
+      console.log('Заполните параметры для продолжения');
       return false;
     }
     return true;
   };
 
   const sendDialog = async (param) => {
-    await procedureRequests.dialogAnswerProcedure(param, processId.value);
+    await requests.dialogAnswerProcedure(param, processId.value);
     stateControl.setState('PROGRESS_PAGE');
   };
 
   const sendCustomDialog = async (param) => {
-    await procedureRequests.customDialogAnswerProcedure(param, processId.value);
+    await requests.customDialogAnswerProcedure(param, processId.value);
     stateControl.setState('PROGRESS_PAGE');
   };
 
   const domessage = (message) => {
     setTimeout(async () => {
       if (!finished.value) {
-        let result = await procedureRequests.continueProcedure(processId.value);
+        let result = await requests.continueProcedure(processId.value);
         await domessage(result);
       }
     }, timeout);
-    async function getRecordIds(graphIds, layerId) {
-      const filter = getFilter(graphIds);
-      const factId = groupingFacts.value.layerIdIndex[layerId].id;
-      const bankId = store.getters['modules/getBankId'];
-      const data = await getFactRecords(bankId, factId, false, 200, filter);
-      return data.map((record) => record.id);
-    }
-    async function showOnMap(graphIds, layerId) {
-      const ids = await getRecordIds(graphIds, layerId);
-      const map = document.getElementById('map');
-      if (!map) {
-        console.error('Нет 2д карты');
-        return;
-      }
-      const graphIdField = {
-        fvId: ids,
-        layerId: layerId,
-      };
-      map.dispatchEvent(
-        new CustomEvent('showGseeObjects', {
-          detail: {
-            graphIdField: graphIdField,
-            layerId: layerId,
-          },
-        }),
-      );
-    }
-    function getFilter(graphIds) {
-      let filter = '';
-      if (graphIds.length == 1) {
-        filter = `{"fda":{"name":"Объект","alias":"GraphID"},"oper":"equal","value":${graphIds[0]},"type":"WherePartCondition"}`;
-      }
-      if (graphIds.length > 1) {
-        for (let i = 0; i < graphIds.length; i++) {
-          filter += `{"fda":{"name":"Объект","alias":"GraphID"},"oper":"equal","value":"${graphIds[i]}","type":"WherePartCondition"}`;
-          if (i < graphIds.length - 1) filter += ',';
-        }
-      }
-      filter =
-        '{"byAnd":"true","version":"1","expression":{"byAnd":"false","condition":[' +
-        filter +
-        ']}}';
-      return filter;
-    }
-    function showOnTable(graphIds, layerId) {
-      const factId = groupingFacts.value.layerIdIndex[layerId].id;
-
-      updateTable?.(factId, getFilter(graphIds));
-    }
+    // async function getRecordIds(graphIds, layerId) {
+    //   const filter = getFilter(graphIds);
+    //   const factId = groupingFacts.value.layerIdIndex[layerId].id;
+    //   const bankId = store.getters['modules/getBankId'];
+    //   const data = await getFactRecords(bankId, factId, false, 200, filter);
+    //   return data.map((record) => record.id);
+    // }
+    //todo
+    // async function showOnMap(graphIds, layerId) {
+    //   const ids = await getRecordIds(graphIds, layerId);
+    //   const map = document.getElementById('map');
+    //   if (!map) {
+    //     console.error('Нет 2д карты');
+    //     return;
+    //   }
+    //   const graphIdField = {
+    //     fvId: ids,
+    //     layerId: layerId,
+    //   };
+    //   map.dispatchEvent(
+    //     new CustomEvent('showGseeObjects', {
+    //       detail: {
+    //         graphIdField: graphIdField,
+    //         layerId: layerId,
+    //       },
+    //     }),
+    //   );
+    // }
+    // function getFilter(graphIds) {
+    //   let filter = '';
+    //   if (graphIds.length == 1) {
+    //     filter = `{"fda":{"name":"Объект","alias":"GraphID"},"oper":"equal","value":${graphIds[0]},"type":"WherePartCondition"}`;
+    //   }
+    //   if (graphIds.length > 1) {
+    //     for (let i = 0; i < graphIds.length; i++) {
+    //       filter += `{"fda":{"name":"Объект","alias":"GraphID"},"oper":"equal","value":"${graphIds[i]}","type":"WherePartCondition"}`;
+    //       if (i < graphIds.length - 1) filter += ',';
+    //     }
+    //   }
+    //   filter =
+    //     '{"byAnd":"true","version":"1","expression":{"byAnd":"false","condition":[' +
+    //     filter +
+    //     ']}}';
+    //   return filter;
+    // }
+    // function showOnTable(graphIds, layerId) {
+    //   const factId = groupingFacts.value.layerIdIndex[layerId].id;
+    //
+    //   updateTable?.(factId, getFilter(graphIds));
+    // }
     switch (message.TYPE_PARAM) {
       case 'EMPTY':
         timeout < maxTimeout && (timeout += 500);
@@ -220,7 +200,7 @@ export function ProcedureRunner({ id, factId, cellId, selected, updateTable }) {
       case 'STAGE_STEP':
         if (message.object?.length > 1) {
           stateControl.state?.value?.stageControl &&
-            stateControl.state.value.stageControl.setStep(message.object[0], message.object[1]);
+          stateControl.state.value.stageControl.setStep(message.object[0], message.object[1]);
         }
         break;
       case 'STAGE_CLOSE':
@@ -276,7 +256,7 @@ export function ProcedureRunner({ id, factId, cellId, selected, updateTable }) {
       case 'STAGE_SET_BASE_TITLE':
       case 'STAGE_SET_ADDITION_TITLE':
         stateControl.state?.value?.stageControl &&
-          stateControl.state.value.stageControl.setStep(message.object[0], message.object[1]);
+        stateControl.state.value.stageControl.setStep(message.object[0], message.object[1]);
         break;
     }
   };
@@ -324,7 +304,7 @@ export function StateControl() {
       //Закидываем в параметры процедуры их actions
 
       if (actions?.length && state?.value?.pp?.parameters?.length > 0) {
-        generateProcedureParamActions(state?.value?.pp, actions);
+        generateProcedureParamActions(state?.value?.pp?.parameters, actions);
       }
     }
 
