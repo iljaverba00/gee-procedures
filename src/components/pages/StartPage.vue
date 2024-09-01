@@ -25,7 +25,7 @@ export default {
     };
 
     const procedures: ComputedRef<ProcedureEl[]> = computed((_) => {
-      const proc = props.allProcedures.procedureList;
+      const proc = props.allProcedures?.procedureList;
       for (const procElement of proc) {
         if (procElement.children?.length) {
           procElement.noTick = true;
