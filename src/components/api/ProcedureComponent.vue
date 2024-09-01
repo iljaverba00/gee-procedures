@@ -15,6 +15,7 @@ const procedureId = ref('');
 const procedureName = ref('');
 const procedureGroup = ref('');
 
+console.log('sssssstttt')
 
 interface Props {
   onStartPage: boolean,
