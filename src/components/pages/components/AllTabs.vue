@@ -134,7 +134,7 @@ console.log(!props.configProcedure?.onlyFavorites && !props.onlyImport)
       <div v-if="!(procedureFavorites?.length || reportsFavorites?.length)"
            style="height: 100%; user-select: none">
         <div class="text-subtitle1 absolute-center" :style="`font-size:1rem`">
-          <div style="user-select: none; text-align: center">В избранном пока нет процедур или отчетов</div>
+          <div style="user-select: none; text-align: center">В избранном пока нет процедур или отчетов!</div>
           <div style="display: flex; justify-content: center; align-items: center">
             <q-btn rounded @click="propTab = 'procedures'" color="primary" text-color="white">
               Добавить
