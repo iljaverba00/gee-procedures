@@ -11,7 +11,7 @@ import {
   QItemLabel,
   QTooltip,
   QItemSection,
-  QBtn
+  QBtn,
 } from 'quasar';
 
 import { ref } from 'vue';
@@ -279,11 +279,18 @@ console.log(!props.configProcedure?.onlyFavorites && !props.onlyImport);
   </q-tab-panels>
 </template>
 
-<style lang="sass">
-:deep(.q-tree__tickbox)
-  margin-right: 4px
-  display: none !important
+<style>
+:deep(.q-tree__tickbox) {
+  margin-right: 4px;
+  display: none !important;
+}
 
-.tab-panels
+.q-tree__tickbox {
+  margin-right: 4px;
+  display: none !important;
+}
+
+.tab-panels {
   height: calc(100% - 55px)
+}
 </style>
