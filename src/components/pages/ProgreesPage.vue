@@ -11,7 +11,7 @@ const props = defineProps(['stageControl']);
     Пожалуйста подождите ...
   </div>
   <div v-if="props.stageControl" class="text-subtitle1 absolute-center progress_style text-center">
-    {{ props.stageControl.getStage() }}
+    {{ props.stageControl?.getStage?.() }}
   </div>
 </template>
 
