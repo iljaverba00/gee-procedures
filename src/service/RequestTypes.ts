@@ -8,6 +8,7 @@ export interface SqlProcedureType {
 export interface iResponse {
   PROCESS_ID: string
   TYPE_PARAM: string
-  object: string | ProcedureParam[]
+  object: string | string[] | ProcedureParam[]
   fileName: string
+  TEXT?:string
 }

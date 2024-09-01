@@ -1,5 +1,6 @@
 import { Ref } from 'vue';
 import { ValidationRule } from 'quasar';
+import { ProcedureParameters, ProcedurePostProcess, StageControl } from './procedureUtills.ts';
 
 export interface ProcedureParam {
   selectValue?: ppSelectValue;
@@ -100,30 +101,46 @@ export interface ProcedureInstance {
 
 export interface pRunner {
   finish: () => void;
-  run:()=>string
+  run:()=>Promise<string|undefined>
   stateControl: rStateControl;
+  sendParams: ()=>Promise<boolean>
+  sendDialog: (param: string)=>Promise<void>
+  sendCustomDialog: (param: object)=>Promise<void>
 }
 
 export interface rStateControl {
+  // name: Ref<string>
+  //stateControl: iState
+  // setState: (name: string, value: object) => void
+  // clearState: () => void
+  // setEmpty: (name:string) => void
+  // setActions: (act:object)=>void,
+
   name: Ref<string>
-  stateControl: iState
-  setState: (name: string, value: object) => void
-  clearState: () => void
-  setEmpty: (name:string) => void
-  setActions: (act:object)=>void,
+  state: Ref<iState | undefined>;
+  setState: (nameState: string, value?: iState) => void;
+  clearState: () => void;
+  setEmpty: (nname: string) => void;
+  setActions: (act: string[]) => void;
 }
 
 export interface iState{
-  pp?:iSPP
+  pp?:ProcedureParameters
   downloadLinks?: iDownloadLink[]
   messages?: string[]
+  error?:string
+  stageControl?:StageControl
+  postProcess?:ProcedurePostProcess
+  dialogData?:string
+  customDialogData?:string
+
 }
-export interface iSPP{
-  parameters:ProcedureParam
-  isValidParameters: ()=>boolean
-  getParamsFiles: ()=>ProcedureParam[]
-  getSelectedValueParams: ()=> object
-}
+// export interface iSPP{
+//   parameters:ProcedureParam
+//   isValidParameters: ()=>boolean
+//   getParamsFiles: ()=>ProcedureParam[]
+//   getSelectedValueParams: ()=> object
+// }
 
 export interface iDownloadLink {
   fileName?: string

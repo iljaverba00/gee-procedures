@@ -53,6 +53,8 @@ export function ProcedureRunner({ id, factId, cellId, selected, updateTable }: R
   const maxTimeout = 1000 * 30;
   let timeout = 0;
 
+  console.log(updateTable);
+
   const stateControl = StateControl();
 
   const procedureCheck = ref(false);
@@ -60,7 +62,7 @@ export function ProcedureRunner({ id, factId, cellId, selected, updateTable }: R
   const run = async () => {
     const method = Array.isArray(selected) ? 'selected' : 'all';
     const result = await requests.startProcedure(id, factId, cellId, method, selected);
-    if (!result?.PROCESS_ID) return null; // Если не получилось запустить процедуру
+    if (!result?.PROCESS_ID) return; // Если не получилось запустить процедуру
     processId.value = result.PROCESS_ID;
     await domessage(result);
     return processId.value;
@@ -166,12 +168,15 @@ export function ProcedureRunner({ id, factId, cellId, selected, updateTable }: R
         timeout < maxTimeout && (timeout += 500);
         break;
       case 'PARAMETERS':
-        if (typeof message.object == 'object') {
-          stateControl.setState('PARAMS_PAGE', { pp: new ProcedureParameters(message.object) });
+        if (Array.isArray(message.object) &&
+          message.object?.every(e => typeof e == 'object')) {
+          const pp = new ProcedureParameters(message.object);
+          stateControl.setState('PARAMS_PAGE', { pp });
         }
         break;
       case 'ACTIONS':
-        stateControl.setActions(message.object);
+        if (Array.isArray(message.object) && message.object?.every(e => typeof e == 'string'))
+          stateControl.setActions(message.object);
         break;
       case 'SAVE_FILE': {
         if (typeof message.object == 'string') {
@@ -182,34 +187,47 @@ export function ProcedureRunner({ id, factId, cellId, selected, updateTable }: R
       }
       case 'THROWABLE':
         finish();
-        stateControl.setState('ERROR_PAGE', { error: message.object });
+        if (typeof message?.object === 'string') {
+          stateControl.setState('ERROR_PAGE', { error: message.object });
+        }
         break;
       case 'FINISH':
         stateControl.setState('FINISH_PAGE', {});
         finish();
         break;
       case 'MESSAGE': {
-        const msg = message.object.replace(/(?:\r\n|\r|\n)/g, '<br />');
-        stateControl.setState('PROGRESS_PAGE', { messages: [msg] });
+        if (typeof message?.object == 'string') {
+          const msg = message.object.replace(/(?:\r\n|\r|\n)/g, '<br />');
+          stateControl.setState('PROGRESS_PAGE', { messages: [msg] });
+        }
         break;
       }
       case 'ERROR_RECORD_DATA': {
         const errMsg = message.TEXT;
-        stateControl.setState('PROGRESS_PAGE', { messages: [errMsg] });
+        if (errMsg) {
+          stateControl.setState('PROGRESS_PAGE', { messages: [errMsg] });
+        }
         break;
       }
       case 'STAGE_DESCRIPTOR': {
-        const stageControl = new StageControl(
-          message.object[0],
-          message.object[1],
-          message.object[2],
-        );
-        stateControl.setState('PROGRESS_PAGE', { stageControl });
+        if (typeof message?.object[0] === 'string' &&
+          typeof message?.object[1] === 'string' &&
+          typeof message?.object[2] === 'number'
+        ) {
+          const stageControl = new StageControl(
+            message.object[0],
+            message.object[1],
+            message.object[2],
+          );
+          stateControl.setState('PROGRESS_PAGE', { stageControl });
+        }
         break;
       }
       case 'STAGE_STEP':
-        if (message.object?.length > 1) {
-          stateControl.state?.value?.stageControl &&
+        if (typeof message.object?.[0] == 'string' &&
+          typeof message.object?.[1] == 'string' &&
+          stateControl.state?.value?.stageControl
+        ) {
           stateControl.state.value.stageControl.setStep(message.object[0], message.object[1]);
         }
         break;
@@ -218,56 +236,65 @@ export function ProcedureRunner({ id, factId, cellId, selected, updateTable }: R
         break;
       case 'POST_PROCESSES': {
         const postProcesses = message.object;
-        const pp = { postProcess: new ProcedurePostProcess(postProcesses) };
-        stateControl.setState('FINISH_PAGE', pp);
-        const isOnlyOpenFD = postProcesses.some((p) => p?.type === 'OPEN_FACTDSCR');
+        if (Array.isArray(postProcesses) && postProcesses.every(p => typeof p === 'string')) {
+          const pp = { postProcess: new ProcedurePostProcess(postProcesses) };
+          stateControl.setState('FINISH_PAGE', pp);
+          // const isOnlyOpenFD = postProcesses.some((p) => p?.type === 'OPEN_FACTDSCR');
+          //
+          // let showType = '';
 
-        let showType = '';
-
-        processesLoop: for (const process of postProcesses) {
-          if (process.type === 'OPEN_FACTDSCR') {
-            updateTable?.(process.factDscrId, process.addSqlWeb);
-            break;
-          } else if (process.type === 'REFRESH_FACTDSCR' && !isOnlyOpenFD) {
-            updateTable?.(process.factDscrId);
-            break;
-          } else if (process.type === 'SHOW_IN') {
-            showType = process.showIn;
-          } else if (process.type === 'SHOW_GRAPHIC_OBJECTS') {
-            switch (showType) {
-              case 'SEMANTIC_AND_GRAPHIC': {
-                showOnMap(process.graphIds, process.layerId);
-                showOnTable(process.graphIds, process.layerId);
-                break processesLoop;
-              }
-              case 'SEMANTIC_ONLY': {
-                showOnTable(process.graphIds, process.layerId);
-                break processesLoop;
-              }
-              case 'GRAPHIC_ONLY': {
-                showOnMap(process.graphIds, process.layerId);
-                break processesLoop;
-              }
-              default: {
-                console.error('Неизвестное место вывода объектов');
-                break processesLoop;
-              }
-            }
-          }
+          // processesLoop: for (const process of postProcesses) {
+          //   if (process.type === 'OPEN_FACTDSCR') {
+          //     updateTable?.(process.factDscrId, process.addSqlWeb);
+          //     break;
+          //   } else if (process.type === 'REFRESH_FACTDSCR' && !isOnlyOpenFD) {
+          //     updateTable?.(process.factDscrId);
+          //     break;
+          //   } else if (process.type === 'SHOW_IN') {
+          //     showType = process.showIn;
+          //   } else if (process.type === 'SHOW_GRAPHIC_OBJECTS') {
+          //     switch (showType) {
+          //       case 'SEMANTIC_AND_GRAPHIC': {
+          //         showOnMap(process.graphIds, process.layerId);
+          //         showOnTable(process.graphIds, process.layerId);
+          //         break processesLoop;
+          //       }
+          //       case 'SEMANTIC_ONLY': {
+          //         showOnTable(process.graphIds, process.layerId);
+          //         break processesLoop;
+          //       }
+          //       case 'GRAPHIC_ONLY': {
+          //         showOnMap(process.graphIds, process.layerId);
+          //         break processesLoop;
+          //       }
+          //       default: {
+          //         console.error('Неизвестное место вывода объектов');
+          //         break processesLoop;
+          //       }
+          //     }
+          //   }
+          // }
         }
         break;
       }
       case 'DIALOG':
-        stateControl.setState('DIALOG_PAGE', { dialogData: message.object });
+        if (typeof message?.object === 'string')
+          stateControl.setState('DIALOG_PAGE', { dialogData: message.object });
         break;
       case 'CUSTOM_DIALOG':
-        stateControl.setState('CUSTOM_DIALOG_PAGE', { customDialogData: message.object });
+        if (typeof message?.object === 'string')
+          stateControl.setState('CUSTOM_DIALOG_PAGE', { customDialogData: message.object });
         break;
       case 'STAGE_SET_BASE_TITLE':
-      case 'STAGE_SET_ADDITION_TITLE':
-        stateControl.state?.value?.stageControl &&
-        stateControl.state.value.stageControl.setStep(message.object[0], message.object[1]);
+      case 'STAGE_SET_ADDITION_TITLE': {
+        if (stateControl.state?.value?.stageControl
+          && typeof message.object[0] == 'string'
+          && typeof message.object[1] == 'string'
+        ) {
+          stateControl.state.value.stageControl.setStep(message.object[0], message.object[1]);
+        }
         break;
+      }
     }
   };
 
@@ -286,16 +313,17 @@ export function StateControl() {
   const state = ref<iState>();
 
   const finishState = ref({});
-  let downloadLinks: string[] = [];
+  let downloadLinks: iDownloadLink[] = [];
   let messages: string[] = [];
-  let actions = [];
+  let actions: any[] = [];
 
   /**Задаем activeState
    * @param {String} nameState название состояния
    * @param {Object} value значение состояния
    */
-  const setState = (nameState, value: iState = {}) => {
-    state.value = Object.assign(name.value === nameState ? state.value : {}, value);
+  const setState = (nameState: string, value: iState = {}) => {
+    const dState: iState = {};
+    state.value = Object.assign(name.value === nameState && state?.value ? state.value : dState, value);
     name.value = nameState;
     if (name.value === 'FINISH_PAGE' || name.value === 'PROGRESS_PAGE') {
       if (value.downloadLinks) {
@@ -313,7 +341,7 @@ export function StateControl() {
     if (name.value === 'PARAMS_PAGE') {
       //Закидываем в параметры процедуры их actions
 
-      if (actions?.length && state?.value?.pp?.parameters?.length > 0) {
+      if (actions?.length && state?.value?.pp?.parameters?.length) {
         generateProcedureParamActions(state?.value?.pp?.parameters, actions);
       }
     }
@@ -321,11 +349,11 @@ export function StateControl() {
     //Когда получили параметры, раскидываем actions события по ним
   };
 
-  const setActions = (act) => {
+  const setActions = (act: string[]) => {
     actions = act;
   };
 
-  const setEmpty = (nname) => {
+  const setEmpty = (nname: string) => {
     state.value = {};
     name.value = nname;
   };

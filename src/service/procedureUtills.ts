@@ -1,6 +1,5 @@
 import { computed } from 'vue';
 import {
-  iSPP,
   ppDialogType,
   ppSelectValue,
   ppType,
@@ -14,7 +13,7 @@ export class StageControl {
   id: string;
   name: string;
   count: number;
-  step?: object;
+  step?: string;
 
   constructor(id: string, name: string, count: number) {
     this.id = id;
@@ -22,7 +21,7 @@ export class StageControl {
     this.count = count;
   }
 
-  setStep(id: string, step: object) {
+  setStep(id: string, step: string) {
     id; // ?
     this.step = step;
   }
@@ -112,7 +111,7 @@ export class ProcedureParameters {
   // }
 
   // Проверка параметров на валидность
-  isValidParameters():boolean {
+  isValidParameters() {
     if (!this.parameters) return false;
 
     const rules = rulesProcedureParams();
@@ -202,7 +201,7 @@ export class ProcedureParameters {
     return checkThreeParameters(this.parameters);
   }
 
-  getParamsFiles(): ProcedureParam[] {
+  getParamsFiles() {
     const parametersExp = this.getExpandedParameters();
 
     return parametersExp
