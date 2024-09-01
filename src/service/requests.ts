@@ -71,7 +71,7 @@ export default {
         fdv,
       },
     };
-    return await axios.get(url, config);
+    return (await axios.get(url, config))?.data
   },
 
   startProcedure: async (procId: string, factId: string, cellId?: string, method?: string, param?: string[] | string, baseURL?: string): Promise<iResponse> => {
