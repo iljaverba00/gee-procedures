@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onUnmounted, onMounted } from 'vue';
+import { ref, computed, onUnmounted, onMounted, watch } from 'vue';
 import StartPage from '../pages/StartPage.vue';
 import ParamsPage from '../pages/ParamsPage.vue';
 import FinishPage from '../pages/FinishPage.vue';
@@ -40,11 +40,10 @@ const currentState = computed(() => stageControl.state.value);
 const csPP = computed(() => currentState.value?.pp);
 const csDialogData = computed(() => currentState.value?.dialogData);
 const csDownloadLinks = computed(() => currentState.value?.downloadLinks);
-const csMessages= computed(() => currentState.value?.messages);
+const csMessages = computed(() => currentState.value?.messages);
 const csPostProcess = computed(() => currentState.value?.postProcess);
 const csError = computed(() => currentState.value?.error);
 const csCustomDialogData = computed(() => currentState.value?.customDialogData);
-
 
 
 const run = (params: RunProcedure) => {
@@ -84,8 +83,15 @@ onMounted(() => {
 });
 
 
-//
-
+watch(currentPage, (v) => {
+  emits('updateCurrentPage', v);
+});
+watch(procedureName, (v) => {
+  emits('updateProcedureName', v);
+});
+watch(procedureId, (v) => {
+  emits('updateProcedureId', v);
+});
 
 defineExpose({ run, stop, nextPage });
 
