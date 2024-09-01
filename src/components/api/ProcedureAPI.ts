@@ -5,35 +5,39 @@ import {
   ProcedurePostProcess,
   StageControl,
 } from '../../service/procedureUtills.ts';
-import { ref, watch, WatchStopHandle } from 'vue';
+import { Ref, ref, watch, WatchStopHandle } from 'vue';
 import { iDownloadLink, iState, ProcedureInstance, pRunner, RunProcedure } from '../../service/types.ts';
 import { iResponse } from '../../service/RequestTypes.ts';
 
 
 export default class ProcedureAPI {
-  procedureInstance?: ProcedureInstance = undefined;
+  procedureInstance?: Ref<ProcedureInstance | undefined>;
 
-  run(params: RunProcedure) {
-    const instance = ProcedureRunner(params);
+  constructor(params: RunProcedure) {
+    const instance: pRunner = ProcedureRunner(params);
     (async () => {
       const processId = await instance.run();
-      if (!processId) return null;
-      this.procedureInstance = { processId, instance };
+      if (processId) {
+        this.procedureInstance = ref();
+        this.procedureInstance.value = { processId, instance };
+      } else {
+        console.log('Непредвиденная ошибка запуска процедуры');
+      }
       params?.callback?.(processId);
     })();
   }
 
   stop() {
-    this.procedureInstance?.instance?.finish();
+    this.procedureInstance?.value?.instance?.finish();
     this.procedureInstance = undefined;
   }
 
   getProcedureInstance() {
-    return this.procedureInstance?.instance;
+    return this.procedureInstance?.value?.instance;
   }
 
   subscribeParams(resolve: () => void) {
-    const proc = this.procedureInstance?.instance;
+    const proc = this.procedureInstance?.value?.instance;
     let uns: WatchStopHandle | undefined = undefined;
     proc &&
     resolve &&

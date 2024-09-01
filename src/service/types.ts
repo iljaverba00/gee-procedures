@@ -15,9 +15,9 @@ export interface ProcedureParam {
   params?: ProcedureParam[];
   mask?: string;
   nullable?: boolean;
-  ext?: string[]
-  description?: string
-  signSupport?: boolean
+  ext?: string[];
+  description?: string;
+  signSupport?: boolean;
 
   actions?: ProcedureAction[];
   targetFields?: { selectValue: string }[];
@@ -89,7 +89,7 @@ export interface RunProcedure {
   factId: string
   cellId?: string
   selected?: string[] | string
-  callback?: (processId: string) => void,
+  callback?: (processId?: string) => void,
   updateTable?: (f: string, sql: string) => void
 }
 
@@ -101,11 +101,11 @@ export interface ProcedureInstance {
 
 export interface pRunner {
   finish: () => void;
-  run:()=>Promise<string|undefined>
+  run: () => Promise<string | undefined>;
   stateControl: rStateControl;
-  sendParams: ()=>Promise<boolean>
-  sendDialog: (param: string)=>Promise<void>
-  sendCustomDialog: (param: object)=>Promise<void>
+  sendParams: () => Promise<boolean>;
+  sendDialog: (param: string) => Promise<void>;
+  sendCustomDialog: (param: object) => Promise<void>;
 }
 
 export interface rStateControl {
@@ -116,7 +116,7 @@ export interface rStateControl {
   // setEmpty: (name:string) => void
   // setActions: (act:object)=>void,
 
-  name: Ref<string>
+  name: Ref<string>;
   state: Ref<iState | undefined>;
   setState: (nameState: string, value?: iState) => void;
   clearState: () => void;
@@ -124,17 +124,18 @@ export interface rStateControl {
   setActions: (act: string[]) => void;
 }
 
-export interface iState{
-  pp?:ProcedureParameters
-  downloadLinks?: iDownloadLink[]
-  messages?: string[]
-  error?:string
-  stageControl?:StageControl
-  postProcess?:ProcedurePostProcess
-  dialogData?:string
-  customDialogData?:string
+export interface iState {
+  pp?: ProcedureParameters;
+  downloadLinks?: iDownloadLink[];
+  messages?: string[];
+  error?: string;
+  stageControl?: StageControl;
+  postProcess?: ProcedurePostProcess;
+  dialogData?: string;
+  customDialogData?: string;
 
 }
+
 // export interface iSPP{
 //   parameters:ProcedureParam
 //   isValidParameters: ()=>boolean
@@ -143,7 +144,7 @@ export interface iState{
 // }
 
 export interface iDownloadLink {
-  fileName?: string
-  fileUid?: string
+  fileName?: string;
+  fileUid?: string;
 }
 
