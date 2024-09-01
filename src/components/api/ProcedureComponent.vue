@@ -37,12 +37,24 @@ const stageControl = runner.stateControl;
 const currentPage = computed(() => stageControl?.name.value);
 const currentState = computed(() => stageControl.state.value);
 
+const csPP = computed(() => currentState.value?.pp);
+const csDialogData = computed(() => currentState.value?.dialogData);
+const csDownloadLinks = computed(() => currentState.value?.downloadLinks);
+const csMessages= computed(() => currentState.value?.messages);
+const csPostProcess = computed(() => currentState.value?.postProcess);
+const csError = computed(() => currentState.value?.error);
+const csCustomDialogData = computed(() => currentState.value?.customDialogData);
+
+
 
 const run = (params: RunProcedure) => {
   runner.run(params);
 };
 const stop = () => {
   runner.finish();
+};
+const nextPage = () => {
+  runner.nextPage('');
 };
 
 onUnmounted(() => {
@@ -75,7 +87,7 @@ onMounted(() => {
 //
 
 
-defineExpose({ run, stop });
+defineExpose({ run, stop, nextPage });
 
 
 const updateTable = () => {
@@ -183,32 +195,32 @@ const updateTable = () => {
 
   <params-page
     v-if="currentPage === 'PARAMS_PAGE'"
-    v-model:procedure-params="currentState?.pp"
-    v-model:procedure-name="procedureName"
-    v-model:procedure-group="procedureGroup"
-    v-model:procedure-id="procedureId"
+    v-model:procedure-params="csPP"
+    :procedure-name="procedureName"
+    :procedure-group="procedureGroup"
+    :procedure-id="procedureId"
   />
 
   <dialog-page
     v-if="currentPage === 'DIALOG_PAGE'"
-    :dialog-data="currentState?.dialogData"
+    :dialog-data="csDialogData"
     @press="runner.nextPage"
   />
 
   <finish-page
     v-if="currentPage === 'FINISH_PAGE'"
-    :download-links="currentState?.downloadLinks"
-    :messages="currentState?.messages"
-    :post-process="currentState?.postProcess"
+    :download-links="csDownloadLinks"
+    :messages="csMessages"
+    :post-process="csPostProcess"
     :process-id="processId"
     @updateTable="updateTable"
   />
 
-  <error-page v-if="currentPage === 'ERROR_PAGE'" :msg="currentState?.error" :name="procedureName" />
+  <error-page v-if="currentPage === 'ERROR_PAGE'" :msg="csError" :name="procedureName" />
 
   <custom-dialog-page
     v-if="currentPage === 'CUSTOM_DIALOG_PAGE'"
-    :data="currentState?.customDialogData"
+    :data="csCustomDialogData"
     @press="runner.nextPage"
   />
 </template>

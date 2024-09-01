@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import ProcedureDialog from './../components/api/ProcedureDialog.vue';
-import { ref } from 'vue';
-
-const showDialog = ref(false);
+// import { ProcedureComponent } from '../main.ts';
+// import { ref } from 'vue';
+//
+// const showDialog = ref(false);
 
 </script>
 <template>
-  <ProcedureDialog
-    v-model:show-dialog="showDialog"
-  />
+<!--  <ProcedureComponent-->
+<!--    v-model:show-dialog="showDialog"-->
+<!--  />-->
 </template>
 
 <style>

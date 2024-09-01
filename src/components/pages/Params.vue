@@ -11,7 +11,7 @@ import ChooseGroupedList from './procparams/ChooseGroupedList.vue';
 import Angle from './procparams/Angle.vue';
 import ChooseSqlSelectPair from './procparams/ChooseSqlSelectPair.vue';
 
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 export default {
   name: 'Params',
@@ -28,8 +28,10 @@ export default {
     Message,
     Angle,
   },
-  setup() {
+  setup(props) {
+    const procedureLocalParams = computed(()=> props.procedureParams ?? [] )
     return {
+      procedureLocalParams,
       isGroup: ref(false),
       switchableGroup: ref(false),
     };
@@ -53,7 +55,7 @@ export default {
       },
       immediate: true,
     },
-  },
+  }
 };
 </script>
 
@@ -75,51 +77,51 @@ export default {
     <div v-if="!procedureGroup?.checked" style="margin-bottom: 16px; font-weight: bold">
       {{ procedureGroup?.description }}
     </div>
-    <div v-for="(param, index) of procedureParams" :key="param.type">
+    <div v-for="(param, index) of procedureLocalParams" :key="param.type">
       <choose-single
         v-if="param.type === 'CHOOSE_SINGLE'"
-        v-model:model-value="procedureParams?.[index]"
+        v-model:model-value="procedureLocalParams[index]"
       />
       <choose-pair
         v-if="param.type === 'CHOOSE_PAIR'"
-        v-model:model-value="procedureParams?.[index]"
+        v-model:model-value="procedureLocalParams[index]"
       />
       <choose-pair-list
         v-if="param.type === 'CHOOSE_PAIR_LIST'"
-        v-model:model-value="procedureParams?.[index]"
+        v-model:model-value="procedureLocalParams[index]"
       />
 
       <choose-list
         v-if="param.type === 'CHOOSE_LIST'"
-        :model-value="procedureParams?.[index]"
-        @updateSelected="procedureParams?.[index] && (procedureParams[index].selectValue = $event)"
+        :model-value="procedureLocalParams[index]"
+        @updateSelected="procedureLocalParams[index] && (procedureLocalParams[index].selectValue = $event)"
       />
 
-      <single v-if="param.type === 'SINGLE'" v-model:model-value="procedureParams?.[index]" />
+      <single v-if="param.type === 'SINGLE'" v-model:model-value="procedureLocalParams[index]" />
       <angle
         v-if="param.type === ('ANGLE' || 'ROTATE')"
-        v-model:model-value="procedureParams?.[index]"
+        v-model:model-value="procedureLocalParams[index]"
       />
       <!--      <toolbar-button v-if="param.type === 'TOOLBAR_BUTTON'" v-model:model-value="procedureParams[index]"/>-->
-      <message v-if="param.type === 'MESSAGE'" v-model:model-value="procedureParams?.[index]" />
-      <path-file v-if="param.type === 'PATH'" v-model:model-value="procedureParams?.[index]" />
+      <message v-if="param.type === 'MESSAGE'" v-model:model-value="procedureLocalParams[index]" />
+      <path-file v-if="param.type === 'PATH'" v-model:model-value="procedureLocalParams[index]" />
       <matching-fields
         v-if="param.type === 'MATCHING_FIELDS'"
-        v-model:model-value="procedureParams?.[index]"
+        v-model:model-value="procedureLocalParams[index]"
       />
       <choose-grouped-list
         v-if="param.type === 'CHOOSE_GROUPED_LIST'"
-        v-model:model-value="procedureParams?.[index]"
-        @updateSelected="procedureParams?.[index] && (procedureParams[index].selectValue = $event)"
+        v-model:model-value="procedureLocalParams[index]"
+        @updateSelected="procedureLocalParams[index] && (procedureLocalParams[index].selectValue = $event)"
       />
       <choose-sql-select-pair
         v-if="param.type === 'CHOOSE_SQL_SELECT_PAIR'"
-        v-model:model-value="procedureParams?.[index]"
+        v-model:model-value="procedureLocalParams[index]"
       />
       <params
         v-if="param.type === 'GROUP'"
-        v-model:procedure-params="procedureParams?.[index].params"
-        v-model:procedure-group="procedureParams?.[index]"
+        v-model:procedure-params="procedureLocalParams[index].params"
+        v-model:procedure-group="procedureLocalParams[index]"
       />
     </div>
   </q-card-section>

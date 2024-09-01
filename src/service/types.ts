@@ -127,15 +127,14 @@ export interface rStateControl {
 }
 
 export interface iState {
-  pp?: ProcedureParameters;
-  downloadLinks?: iDownloadLink[];
-  messages?: string[];
-  error?: string;
-  stageControl?: StageControl;
-  postProcess?: ProcedurePostProcess;
-  dialogData?: string;
-  customDialogData?: string;
-
+  pp?: ProcedureParameters
+  downloadLinks?: iDownloadLink[]
+  messages?: string[]
+  error?: string
+  stageControl?: StageControl
+  postProcess?: ProcedurePostProcess
+  dialogData?: string
+  customDialogData?: string
 }
 
 // export interface iSPP{
