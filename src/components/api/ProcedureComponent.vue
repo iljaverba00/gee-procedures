@@ -8,7 +8,7 @@ import ErrorPage from '../pages/ErrorPage.vue';
 import DialogPage from '../pages/DialogPage.vue';
 import CustomDialogPage from '../pages/CustomDialogPage.vue';
 import { iAllProcedures, iConfig, pRunner, RunProcedure } from '../../service/types.ts';
-import { ProcedureRunner } from './ProcedureAPI.ts';
+import { ProcedureRunner } from './ProcedureEndpoint.ts';
 
 const startPage = ref('START_PAGE');
 const procedureId = ref('');
