@@ -82,7 +82,7 @@ console.log(!props.configProcedure?.onlyFavorites && !props.onlyImport);
     vertical
     transition-prev="jump-up"
     transition-next="jump-up"
-    :class="onlyImport ? '' : 'tab-panels'"
+    :class="onlyImport ? '' : 'tab-panels-c'"
   >
     <q-tab-panel name="favorites">
       <q-list v-if="procedureFavorites?.length">
@@ -280,9 +280,13 @@ console.log(!props.configProcedure?.onlyFavorites && !props.onlyImport);
   </q-tab-panels>
 </template>
 
-<style >
-::v-deep(.q-tree__tickbox ) {
+<style>
+::v-deep(.q-tree__tickbox) {
   margin-right: 4px;
   display: none !important
+}
+
+.tab-panels-c {
+  height: calc(100% - 55px)
 }
 </style>
