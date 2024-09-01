@@ -1,8 +1,5 @@
 <script lang="ts">
 import { ref } from 'vue';
-import {
-  QSelect
-} from 'quasar';
 
 export default {
   name: 'MatchingFields',

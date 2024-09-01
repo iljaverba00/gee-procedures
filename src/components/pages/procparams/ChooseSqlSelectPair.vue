@@ -4,9 +4,6 @@ import { rulesProcedureParams } from '../../../service/procedureUtills.ts';
 import requests from '../../../service/requests.ts';
 import { setupComponentValidator } from '../../../service/providerInjection.ts';
 import {
-  QItem,
-  QSpinner,
-  QItemSection,
   QSelect
 } from 'quasar';
 

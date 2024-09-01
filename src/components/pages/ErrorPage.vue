@@ -1,9 +1,6 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import {
-  QIcon,
-  QBtn,
-} from 'quasar';
+
 
 export default defineComponent({
   name: 'ErrorPage',

@@ -3,12 +3,7 @@ import { openURL } from 'quasar';
 import { defineComponent } from 'vue';
 import requests from '../../service/requests.ts';
 import { iDownloadLink } from '../../service/types.ts';
-import {
-  QIcon,
-  QScrollArea,
-  QBtn,
-  QCardSection,
-} from 'quasar';
+
 
 export default defineComponent({
   name: 'FinishPage',

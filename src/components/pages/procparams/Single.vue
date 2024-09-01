@@ -4,8 +4,6 @@ import { rulesProcedureParams, toIsoString } from '../../../service/procedureUti
 import { setupComponentValidator } from '../../../service/providerInjection.ts';
 
 import {
-  QCheckbox,
-  QIcon,
   QInput,
 } from 'quasar';
 
