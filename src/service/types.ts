@@ -150,3 +150,27 @@ export interface iDownloadLink {
   fileUid?: string;
 }
 
+
+export interface iAllProcedures {
+  procedures: ProcedureEl[];
+  factProcedures: ProcedureEl[];
+  reports: ProcedureEl[];
+  favorites: {
+    procedures: ProcedureEl[]
+    reports: ProcedureEl[]
+  };
+}
+
+export interface ProcedureEl {
+  name: string;
+  id : string
+  children: ProcedureEl[];
+}
+
+export interface iConfig {
+  onlyFavorites: boolean;
+  editFavorites: boolean;
+}
+
+
+

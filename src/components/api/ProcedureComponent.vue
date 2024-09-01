@@ -7,7 +7,7 @@ import ProgressPage from '../pages/ProgreesPage.vue';
 import ErrorPage from '../pages/ErrorPage.vue';
 import DialogPage from '../pages/DialogPage.vue';
 import CustomDialogPage from '../pages/CustomDialogPage.vue';
-import { pRunner, RunProcedure } from '../../service/types.ts';
+import { iAllProcedures, iConfig, pRunner, RunProcedure } from '../../service/types.ts';
 import { ProcedureRunner } from './ProcedureAPI.ts';
 
 const startPage = ref('START_PAGE');
@@ -15,39 +15,27 @@ const procedureId = ref('');
 const procedureName = ref('');
 const procedureGroup = ref('');
 
+
+interface Props {
+  onStartPage: boolean,
+  method: boolean
+  propTab: string
+  onlyImport: boolean
+  currentPageProp: string
+  procedureProp: Array<{ id: string, name: string } | string>
+  allProcedures: iAllProcedures
+  config: iConfig
+}
+
 const emits = defineEmits(['updateCurrentPage', 'updateProcedureName', 'updateProcedureId']);
-const props = defineProps({
-  onStartPage: {
-    type: Boolean,
-    default: false,
-  },
-  method: {
-    type: Boolean,
-    default: false,
-  },
-  propTab: {
-    type: String,
-    default: 'favorites',
-  },
-  onlyImport: {
-    type: Boolean,
-    default: false,
-  },
-  currentPageProp: {
-    type: String,
-    default: 'START_PAGE',
-  },
-  procedureProp: {
-    type: Array<{ id: string, name: string } | string>,
-  },
-});
+const props = defineProps<Props>();
 
 const runner: pRunner = ProcedureRunner();
 const processId = runner.processId;
 const stageControl = runner.stateControl;
 
-const currentPage = computed(()=> stageControl?.name.value)
-const currentState = computed(()=> stageControl.state.value)
+const currentPage = computed(() => stageControl?.name.value);
+const currentState = computed(() => stageControl.state.value);
 
 
 const run = (params: RunProcedure) => {
@@ -90,9 +78,9 @@ onMounted(() => {
 defineExpose({ run, stop });
 
 
-const updateTable = ()=>{
+const updateTable = () => {
 
-}
+};
 
 //watch: {
 //   currentPage(n);
@@ -109,7 +97,6 @@ const updateTable = ()=>{
 //   {
 //     this.$emit('updateProcedureId', n);
 //   }
-
 
 
 //const nextPage = (param) => {
@@ -175,7 +162,6 @@ const updateTable = ()=>{
 //     }
 //   }
 // };
-
 
 
 </script>
