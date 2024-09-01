@@ -26,6 +26,7 @@ export default {
 
     const procedures: ComputedRef<ProcedureEl[]> = computed((_) => {
       const proc = props.allProcedures?.procedureList;
+      console.log('proc',proc)
       if (Array.isArray(proc))
         for (const procElement of proc) {
           if (procElement.children?.length) {
@@ -61,7 +62,6 @@ export default {
           .filter((f) => !!f) ?? []
       );
     });
-    console.log('start')
     return {
       ticked: ref([]),
       procedures,

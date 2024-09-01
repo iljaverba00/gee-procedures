@@ -14,8 +14,6 @@ const procedureId = ref('');
 const procedureName = ref('');
 const procedureGroup = ref('');
 
-console.log('sssssstttt');
-
 interface Props {
   onStartPage: boolean,
   method: boolean
@@ -64,8 +62,6 @@ onUnmounted(() => {
 });
 
 onMounted(() => {
-  console.log('currentPageProp',props.currentPageProp);
-  console.log('sp', Pages.START_PAGE)
   switch (props.currentPageProp) {
     case 'START_PAGE':
       props.onStartPage && (currentPage.value = 'START_PAGE');
