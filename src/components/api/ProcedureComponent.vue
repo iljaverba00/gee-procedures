@@ -35,7 +35,7 @@ const runner: pRunner = ProcedureRunner();
 const processId = runner.processId;
 const stageControl = runner.stateControl;
 
-const currentPage = computed(() => stageControl?.name.value);
+const currentPage = computed(() => stageControl?.name.value ?? startPage.value);
 const currentState = computed(() => stageControl.state.value);
 
 const csPP = computed(() => currentState.value?.pp);
