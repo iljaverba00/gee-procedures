@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig } from 'axios';
-import { iResponse, SqlProcedureType } from './RequestTypes.ts';
+import { iResponse, SqlProcedureType } from './RequestTypes';
 
 
 export default {

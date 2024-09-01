@@ -6,7 +6,7 @@ import {
   ProcedureAction,
   ProcedureParam,
   ValidatePPFunc,
-} from './types.ts';
+} from './types';
 import { ValidationRule } from 'quasar';
 
 export class StageControl {

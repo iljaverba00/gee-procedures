@@ -1,11 +1,11 @@
 <script setup lang="ts">
 
 import { onMounted, ref, toRefs } from 'vue';
-import { rulesProcedureParams } from '../../../service/procedureUtills.ts';
+import { rulesProcedureParams } from 'src/service/procedureUtills';
 // import SigningFileDialog from 'components/Files/SigningFileDialog.vue';
 import { ValidationRule } from 'quasar';
-import { ppDialogType } from '../../../service/types.ts';
-import { setupComponentValidator } from '../../../service/providerInjection.ts';
+import { ppDialogType } from 'src/service/types';
+import { setupComponentValidator } from 'src/service/providerInjection';
 import {
   QBtn,
   QFile,

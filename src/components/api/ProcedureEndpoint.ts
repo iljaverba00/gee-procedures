@@ -1,13 +1,13 @@
-import requests from '../../service/requests.ts';
+import requests from '../../service/requests';
 import {
   generateProcedureParamActions,
   ProcedureParameters,
   ProcedurePostProcess,
   StageControl,
-} from '../../service/procedureUtills.ts';
+} from 'src/service/procedureUtills';
 import { ref } from 'vue';
-import { iDownloadLink, iState, pRunner, RunProcedure } from '../../service/types.ts';
-import { iResponse } from '../../service/RequestTypes.ts';
+import { iDownloadLink, iState, pRunner, RunProcedure } from 'src/service/types';
+import { iResponse } from 'src/service/RequestTypes';
 
 
 export function ProcedureRunner(): pRunner {

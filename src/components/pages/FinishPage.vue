@@ -1,8 +1,8 @@
 <script lang="ts">
 import { openURL } from 'quasar';
 import { defineComponent } from 'vue';
-import requests from '../../service/requests.ts';
-import { iDownloadLink } from '../../service/types.ts';
+import requests from 'src/service/requests';
+import { iDownloadLink } from 'src/service/types';
 
 
 export default defineComponent({

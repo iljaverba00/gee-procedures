@@ -2,7 +2,7 @@
 import { computed, ComputedRef, ref } from 'vue';
 import FavoritesTab from './components/FavoritesTab.vue';
 import AllTabs from './components/AllTabs.vue';
-import { ProcedureEl } from '../../service/types.ts';
+import { ProcedureEl } from 'src/service/types';
 
 
 

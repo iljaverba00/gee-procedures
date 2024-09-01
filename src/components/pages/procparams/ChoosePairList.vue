@@ -1,8 +1,8 @@
 <script lang="ts">
 /* eslint-disable vue/no-mutating-props */
 import { defineComponent, ref } from 'vue';
-import { rulesProcedureParams } from '../../../service/procedureUtills.ts';
-import { setupComponentValidator } from '../../../service/providerInjection.ts';
+import { rulesProcedureParams } from 'src/service/procedureUtills';
+import { setupComponentValidator } from 'src/service/providerInjection';
 
 
 

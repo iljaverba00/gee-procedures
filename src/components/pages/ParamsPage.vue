@@ -2,7 +2,7 @@
 import { defineComponent } from 'vue';
 import { ref } from 'vue';
 import Params from './Params.vue';
-import { ProcedureParam } from '../../service/types.ts';
+import { ProcedureParam } from 'src/service/types';
 
 
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ProcedureParam } from '../../../service/types.ts';
+import { ProcedureParam } from 'src/service/types';
 
 const props = defineProps<{ modelValue: ProcedureParam }>();
 </script>

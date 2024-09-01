@@ -1,8 +1,8 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import { rulesProcedureParams } from '../../../service/procedureUtills.ts';
-import requests from '../../../service/requests.ts';
-import { setupComponentValidator } from '../../../service/providerInjection.ts';
+import { rulesProcedureParams } from 'src/service/procedureUtills';
+import requests from 'src/service/requests';
+import { setupComponentValidator } from 'src/service/providerInjection';
 import {
   QSelect
 } from 'quasar';

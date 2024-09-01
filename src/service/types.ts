@@ -1,6 +1,6 @@
 import { Ref } from 'vue';
 import { ValidationRule } from 'quasar';
-import { ProcedureParameters, ProcedurePostProcess, StageControl } from './procedureUtills.ts';
+import { ProcedureParameters, ProcedurePostProcess, StageControl } from './procedureUtills';
 
 export interface ProcedureParam {
   selectValue?: ppSelectValue;

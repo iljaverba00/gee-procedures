@@ -1,4 +1,4 @@
-import { ProcedureParam } from './types.ts';
+import { ProcedureParam } from './types';
 
 
 export interface SqlProcedureType {

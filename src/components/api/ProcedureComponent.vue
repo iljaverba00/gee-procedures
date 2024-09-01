@@ -7,8 +7,8 @@ import ProgressPage from '../pages/ProgreesPage.vue';
 import ErrorPage from '../pages/ErrorPage.vue';
 import DialogPage from '../pages/DialogPage.vue';
 import CustomDialogPage from '../pages/CustomDialogPage.vue';
-import { iAllProcedures, iConfig, Pages, pRunner, RunProcedure } from '../../service/types.ts';
-import { ProcedureRunner } from './ProcedureEndpoint.ts';
+import { iAllProcedures, iConfig, Pages, pRunner, RunProcedure } from 'src/service/types';
+import { ProcedureRunner } from './ProcedureEndpoint';
 
 const procedureId = ref('');
 const procedureName = ref('');
