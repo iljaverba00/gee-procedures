@@ -26,12 +26,13 @@ export default {
 
     const procedures: ComputedRef<ProcedureEl[]> = computed((_) => {
       const proc = props.allProcedures?.procedureList;
-      for (const procElement of proc) {
-        if (procElement.children?.length) {
-          procElement.noTick = true;
-          procElement.selectable = false;
+      if (Array.isArray(proc))
+        for (const procElement of proc) {
+          if (procElement.children?.length) {
+            procElement.noTick = true;
+            procElement.selectable = false;
+          }
         }
-      }
       return proc;
     });
 
