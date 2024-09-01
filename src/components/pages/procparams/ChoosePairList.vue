@@ -4,6 +4,12 @@ import { defineComponent, ref } from 'vue';
 import { rulesProcedureParams } from '../../../service/procedureUtills.ts';
 import { setupComponentValidator } from '../../../service/providerInjection.ts';
 
+import {
+  QItem,
+  QItemSection,
+  QSelect
+} from 'quasar';
+
 export default defineComponent({
   name: 'ChoosePairList',
   props: ['modelValue'],

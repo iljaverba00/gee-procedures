@@ -4,6 +4,8 @@ import FavoritesTab from './components/FavoritesTab.vue';
 import AllTabs from './components/AllTabs.vue';
 import { ProcedureEl } from '../../service/types.ts';
 
+
+
 export default {
   name: 'StartPage',
   components: { FavoritesTab, AllTabs },

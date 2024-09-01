@@ -1,5 +1,8 @@
 <script lang="ts">
 import { ref } from 'vue';
+import {
+  QSelect
+} from 'quasar';
 
 export default {
   name: 'MatchingFields',
@@ -27,7 +30,7 @@ export default {
         :options="modelValue.sourceFields"
         option-value="key"
         option-label="name"
-      ></q-select>
+      />
     </div>
   </div>
 </template>

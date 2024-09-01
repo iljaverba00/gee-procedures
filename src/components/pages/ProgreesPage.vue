@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import {
+  QCardSection,
+  QSpinnerGears
+} from 'quasar';
 const props = defineProps(['stageControl']);
 </script>
 

@@ -1,7 +1,10 @@
 <script lang="ts">
+import { QInput } from 'quasar';
 import { defineComponent, ref } from 'vue';
 import { rulesProcedureParams } from '../../../service/procedureUtills.ts';
 import { setupComponentValidator } from '../../../service/providerInjection.ts';
+
+
 
 export default defineComponent({
   name: 'Angle',

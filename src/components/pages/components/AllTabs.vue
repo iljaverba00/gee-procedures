@@ -1,5 +1,18 @@
 <script setup lang="ts">
-
+import {
+  QTab,
+  QTabs,
+  QSeparator,
+  QTabPanels,
+  QList,
+  QItem,
+  QTree,
+  QCheckbox,
+  QItemLabel,
+  QTooltip,
+  QItemSection,
+  QBtn
+} from 'quasar';
 
 import { ref } from 'vue';
 
@@ -33,7 +46,7 @@ const checkProcedure = () => {
     : props.procedures;
 };
 
-console.log(!props.configProcedure?.onlyFavorites && !props.onlyImport)
+console.log(!props.configProcedure?.onlyFavorites && !props.onlyImport);
 
 </script>
 

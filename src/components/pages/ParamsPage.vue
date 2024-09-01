@@ -4,6 +4,12 @@ import { ref } from 'vue';
 import Params from './Params.vue';
 import { ProcedureParam } from '../../service/types.ts';
 
+import {
+  QCheckbox,
+  QTooltip,
+  QCardSection,
+} from 'quasar';
+
 export default defineComponent({
   name: 'ParamsPage',
   components: { Params },

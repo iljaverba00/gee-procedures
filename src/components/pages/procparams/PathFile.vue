@@ -3,9 +3,13 @@
 import { onMounted, ref, toRefs } from 'vue';
 import { rulesProcedureParams } from '../../../service/procedureUtills.ts';
 // import SigningFileDialog from 'components/Files/SigningFileDialog.vue';
-import { QFile, ValidationRule } from 'quasar';
+import { ValidationRule } from 'quasar';
 import { ppDialogType } from '../../../service/types.ts';
 import { setupComponentValidator } from '../../../service/providerInjection.ts';
+import {
+  QBtn,
+  QFile,
+} from 'quasar';
 
 const props = defineProps<{ modelValue: any }>();
 const { modelValue } = toRefs(props);

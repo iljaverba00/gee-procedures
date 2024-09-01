@@ -1,8 +1,13 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { rulesProcedureParams, toIsoString } from '../../../service/procedureUtills.ts';
-import { QInput } from 'quasar';
 import { setupComponentValidator } from '../../../service/providerInjection.ts';
+
+import {
+  QCheckbox,
+  QIcon,
+  QInput,
+} from 'quasar';
 
 export default defineComponent({
   name: 'Single',

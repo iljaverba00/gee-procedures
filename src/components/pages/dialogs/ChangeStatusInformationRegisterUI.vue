@@ -96,3 +96,29 @@
 <!--&lt;!&ndash;  />&ndash;&gt;-->
 <!--</template>-->
 
+
+<!--import {-->
+<!--QTab,-->
+<!--QTabs,-->
+<!--QSeparator,-->
+<!--QTabPanels,-->
+<!--QList,-->
+<!--QItem,-->
+<!--QSpinner,-->
+<!--QTree,-->
+<!--QCheckbox,-->
+<!--QItemLabel,-->
+<!--QTooltip,-->
+<!--QItemSection,-->
+<!--QIcon,-->
+<!--QScrollArea,-->
+<!--QCard,-->
+<!--QBtn,-->
+<!--QFile,-->
+<!--QBtnGroup,-->
+<!--QCardSection,-->
+<!--QCardActions,-->
+<!--QSpinnerGears,-->
+<!--QInput,-->
+<!--QSelect-->
+<!--} from 'quasar';-->

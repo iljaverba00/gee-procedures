@@ -11,6 +11,11 @@ import ChooseGroupedList from './procparams/ChooseGroupedList.vue';
 import Angle from './procparams/Angle.vue';
 import ChooseSqlSelectPair from './procparams/ChooseSqlSelectPair.vue';
 
+import {
+  QCheckbox,
+  QCardSection,
+} from 'quasar';
+
 import { computed, ref } from 'vue';
 
 export default {

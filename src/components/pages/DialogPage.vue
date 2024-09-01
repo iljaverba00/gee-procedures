@@ -1,4 +1,11 @@
 <script setup lang="ts">
+import {
+  QCard,
+  QBtn,
+  QBtnGroup,
+  QCardSection,
+  QCardActions,
+} from 'quasar';
 
 const props = defineProps(['dialogData']);
 const emits = defineEmits(['press']);
