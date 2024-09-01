@@ -195,6 +195,7 @@ const updateTable = () => {
     v-model:procedure-id="procedureId"
     v-model:procedure-name="procedureName"
     v-model:procedure-group="procedureGroup"
+    :all-procedures="props.allProcedures"
     :propTab="propTab"
     :onlyImport="onlyImport"
   />

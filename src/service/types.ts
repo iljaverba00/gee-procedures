@@ -127,14 +127,14 @@ export interface rStateControl {
 }
 
 export interface iState {
-  pp?: ProcedureParameters
-  downloadLinks?: iDownloadLink[]
-  messages?: string[]
-  error?: string
-  stageControl?: StageControl
-  postProcess?: ProcedurePostProcess
-  dialogData?: string
-  customDialogData?: string
+  pp?: ProcedureParameters;
+  downloadLinks?: iDownloadLink[];
+  messages?: string[];
+  error?: string;
+  stageControl?: StageControl;
+  postProcess?: ProcedurePostProcess;
+  dialogData?: string;
+  customDialogData?: string;
 }
 
 // export interface iSPP{
@@ -151,9 +151,9 @@ export interface iDownloadLink {
 
 
 export interface iAllProcedures {
-  procedures: ProcedureEl[];
-  factProcedures: ProcedureEl[];
-  reports: ProcedureEl[];
+  procedureList: ProcedureEl[];
+  procedureFact: ProcedureEl[];
+  reportsList: ProcedureEl[];
   favorites: {
     procedures: ProcedureEl[]
     reports: ProcedureEl[]
@@ -162,7 +162,7 @@ export interface iAllProcedures {
 
 export interface ProcedureEl {
   name: string;
-  id : string
+  id: string;
   children: ProcedureEl[];
 }
 

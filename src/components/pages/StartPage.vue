@@ -25,7 +25,7 @@ export default {
     };
 
     const procedures: ComputedRef<ProcedureEl[]> = computed((_) => {
-      const proc = props.allProcedures.procedures;
+      const proc = props.allProcedures.procedureList;
       for (const procElement of proc) {
         if (procElement.children?.length) {
           procElement.noTick = true;
@@ -37,7 +37,7 @@ export default {
 
     const proceduresFact: ComputedRef<ProcedureEl[]> = computed((_) => props.allProcedures.procedureFact);
 
-    const reports: ComputedRef<ProcedureEl[]> = computed((_) => props.allProcedures.reports);
+    const reports: ComputedRef<ProcedureEl[]> = computed((_) => props.allProcedures.reportsList);
 
     //todo set для избранных процедур
     const procedureFavoritesIds: ComputedRef<ProcedureEl[]> = computed(()=> props.allProcedures.favorites.procedures);
