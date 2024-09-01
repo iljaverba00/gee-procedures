@@ -60,7 +60,7 @@ export default {
           .filter((f) => !!f) ?? []
       );
     });
-
+    console.log('start')
     return {
       ticked: ref([]),
       procedures,
