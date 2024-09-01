@@ -5,67 +5,25 @@ import {
   ProcedurePostProcess,
   StageControl,
 } from '../../service/procedureUtills.ts';
-import { Ref, ref, watch, WatchStopHandle } from 'vue';
-import { iDownloadLink, iState, ProcedureInstance, pRunner, RunProcedure } from '../../service/types.ts';
+import { ref } from 'vue';
+import { iDownloadLink, iState, pRunner, RunProcedure } from '../../service/types.ts';
 import { iResponse } from '../../service/RequestTypes.ts';
 
 
-export default class ProcedureAPI {
-  procedureInstance?: Ref<ProcedureInstance | undefined>;
-
-  constructor(params: RunProcedure) {
-    const instance: pRunner = ProcedureRunner(params);
-    (async () => {
-      const processId = await instance.run();
-      if (processId) {
-        this.procedureInstance = ref();
-        this.procedureInstance.value = { processId, instance };
-      } else {
-        console.log('Непредвиденная ошибка запуска процедуры');
-      }
-      params?.callback?.(processId);
-    })();
-  }
-
-  stop() {
-    this.procedureInstance?.value?.instance?.finish();
-    this.procedureInstance = undefined;
-  }
-
-  getProcedureInstance() {
-    return this.procedureInstance?.value?.instance;
-  }
-
-  subscribeParams(resolve: () => void) {
-    const proc = this.procedureInstance?.value?.instance;
-    let uns: WatchStopHandle | undefined = undefined;
-    proc &&
-    resolve &&
-    (uns = watch(proc.stateControl.name, (val) => {
-      if (val === 'PARAMS_PAGE') {
-        resolve();
-        uns?.();
-      }
-    }));
-    return !!uns;
-  }
-}
-
-export function ProcedureRunner({ id, factId, cellId, selected, updateTable }: RunProcedure): pRunner {
+export function ProcedureRunner(): pRunner {
   const processId = ref<string>();
   const finished = ref(false);
   const maxTimeout = 1000 * 30;
   let timeout = 0;
 
-  console.log(updateTable);
-
   const stateControl = StateControl();
 
   const procedureCheck = ref(false);
 
-  const run = async () => {
-    const method = Array.isArray(selected) ? 'selected' : 'all';
-    const result = await requests.startProcedure(id, factId, cellId, method, selected);
+  const run = async (runParams: RunProcedure) => {
+    const method = Array.isArray(runParams.selected) ? 'selected' : 'all';
+    const result = await requests.startProcedure(
+      runParams.id, runParams.factId, runParams.cellId, method, runParams.selected);
     if (!result?.PROCESS_ID) return; // Если не получилось запустить процедуру
     processId.value = result.PROCESS_ID;
     await domessage(result);
@@ -74,6 +32,27 @@ export function ProcedureRunner({ id, factId, cellId, selected, updateTable }: R
 
   const finish = () => {
     finished.value = true;
+  };
+
+
+  const nextPage = (param: string | object) => {
+    const currentPage = stateControl.name.value;
+    switch (currentPage) {
+      case 'PARAMS_PAGE': {
+        void sendParams();
+        break;
+      }
+      case 'DIALOG_PAGE': {
+        if (typeof param === 'string')
+          void sendDialog(param);
+        break;
+      }
+      case 'CUSTOM_DIALOG_PAGE': {
+        if (typeof param === 'object')
+          void sendCustomDialog(param);
+        break;
+      }
+    }
   };
 
   const sendParams = async () => {
@@ -305,10 +284,12 @@ export function ProcedureRunner({ id, factId, cellId, selected, updateTable }: R
   return {
     run,
     finish,
+    nextPage,
     sendParams,
     sendDialog,
     sendCustomDialog,
     stateControl,
+    processId,
   };
 }
 

@@ -101,11 +101,13 @@ export interface ProcedureInstance {
 
 export interface pRunner {
   finish: () => void;
-  run: () => Promise<string | undefined>;
+  run: (p: RunProcedure) => Promise<string | undefined>;
+  nextPage: (p: string | object) => void;
   stateControl: rStateControl;
   sendParams: () => Promise<boolean>;
   sendDialog: (param: string) => Promise<void>;
   sendCustomDialog: (param: object) => Promise<void>;
+  processId: Ref<string | undefined>;
 }
 
 export interface rStateControl {
