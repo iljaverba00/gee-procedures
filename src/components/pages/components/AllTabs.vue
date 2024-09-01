@@ -285,6 +285,10 @@ console.log(!props.configProcedure?.onlyFavorites && !props.onlyImport);
   margin-right: 4px
   display: none !important
 
+.q-tree__tickbox
+  margin-right: 4px
+  display: none !important
+
 .tab-panels
   height: calc(100% - 55px)
 
