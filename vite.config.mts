@@ -41,7 +41,7 @@ export default defineConfig(({ command }) => {
       build: {
         minify: false,
         lib: {
-          entry: path.resolve(__dirname, 'src/main.ts'),
+          entry: [path.resolve(__dirname, 'src/main.ts')],
           name: 'GeeProceduresModule',
           formats: ['es', 'umd'],
           fileName: format => `gee-procedure.${format}.js`,
