@@ -1,3 +1,56 @@
+<script setup lang="ts">
+import {
+  QTab,
+  QTabs,
+  QSeparator,
+  QTabPanels,
+  QList,
+  QItem,
+  QTree,
+  QCheckbox,
+  QItemLabel,
+  QTooltip,
+  QItemSection,
+  QBtn,
+} from 'quasar';
+import 'quasar/dist/quasar.css';
+
+import { ref } from 'vue';
+
+const props = defineProps([
+  'configProcedure',
+  'procedureId',
+  'procedureFavorites',
+  'reportsFavorites',
+  'reports',
+  'procedures',
+  'procedureFavoritesIds',
+  'reportsFavoritesIds',
+  'proceduresFact',
+  'onlyImport',
+]);
+
+const emits = defineEmits([
+  'updateSelected',
+  'removeFavoriteRep',
+  'removeFavoriteProc',
+  'update:propTab',
+  'update:procedureFavoritesIds',
+  'update:reportsFavoritesIds',
+]);
+
+const propTab = ref('favorites');
+
+const checkProcedure = () => {
+  return props.onlyImport
+    ? props.procedures.filter((v: { name: string }) => v.name == 'Импорт из ...')
+    : props.procedures;
+};
+
+console.log(!props.configProcedure?.onlyFavorites && !props.onlyImport);
+
+</script>
+
 <template>
   <q-tabs
     v-if="!props.configProcedure?.onlyFavorites && !props.onlyImport"
@@ -226,61 +279,6 @@
     </q-tab-panel>
   </q-tab-panels>
 </template>
-
-<script setup lang="ts">
-import {
-  QTab,
-  QTabs,
-  QSeparator,
-  QTabPanels,
-  QList,
-  QItem,
-  QTree,
-  QCheckbox,
-  QItemLabel,
-  QTooltip,
-  QItemSection,
-  QBtn,
-} from 'quasar';
-import 'quasar/dist/quasar.css';
-
-import { ref } from 'vue';
-
-const props = defineProps([
-  'configProcedure',
-  'procedureId',
-  'procedureFavorites',
-  'reportsFavorites',
-  'reports',
-  'procedures',
-  'procedureFavoritesIds',
-  'reportsFavoritesIds',
-  'proceduresFact',
-  'onlyImport',
-]);
-
-const emits = defineEmits([
-  'updateSelected',
-  'removeFavoriteRep',
-  'removeFavoriteProc',
-  'update:propTab',
-  'update:procedureFavoritesIds',
-  'update:reportsFavoritesIds',
-]);
-
-const propTab = ref('favorites');
-
-const checkProcedure = () => {
-  return props.onlyImport
-    ? props.procedures.filter((v: { name: string }) => v.name == 'Импорт из ...')
-    : props.procedures;
-};
-
-console.log(!props.configProcedure?.onlyFavorites && !props.onlyImport);
-
-</script>
-
-
 
 <style>
 ::v-deep(.q-tree__tickbox) {
