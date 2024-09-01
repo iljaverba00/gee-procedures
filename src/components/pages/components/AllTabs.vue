@@ -82,7 +82,7 @@ console.log(!props.configProcedure?.onlyFavorites && !props.onlyImport);
     vertical
     transition-prev="jump-up"
     transition-next="jump-up"
-    :class="onlyImport ? '' : 'tab-panels-c'"
+    class="tab-panels-c"
   >
     <q-tab-panel name="favorites">
       <q-list v-if="procedureFavorites?.length">
