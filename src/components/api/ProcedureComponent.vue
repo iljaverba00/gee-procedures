@@ -7,15 +7,14 @@ import ProgressPage from '../pages/ProgreesPage.vue';
 import ErrorPage from '../pages/ErrorPage.vue';
 import DialogPage from '../pages/DialogPage.vue';
 import CustomDialogPage from '../pages/CustomDialogPage.vue';
-import { iAllProcedures, iConfig, pRunner, RunProcedure } from '../../service/types.ts';
+import { iAllProcedures, iConfig, Pages, pRunner, RunProcedure } from '../../service/types.ts';
 import { ProcedureRunner } from './ProcedureEndpoint.ts';
 
-const startPage = ref('START_PAGE');
 const procedureId = ref('');
 const procedureName = ref('');
 const procedureGroup = ref('');
 
-console.log('sssssstttt')
+console.log('sssssstttt');
 
 interface Props {
   onStartPage: boolean,
@@ -35,7 +34,10 @@ const runner: pRunner = ProcedureRunner();
 const processId = runner.processId;
 const stageControl = runner.stateControl;
 
-const currentPage = computed(() => stageControl?.name.value ?? startPage.value);
+const currentPage = computed({
+  get: () => stageControl?.name.value ?? Pages.START_PAGE,
+  set: (v) => stageControl.name.value = v,
+});
 const currentState = computed(() => stageControl.state.value);
 
 const csPP = computed(() => currentState.value?.pp);
@@ -62,12 +64,14 @@ onUnmounted(() => {
 });
 
 onMounted(() => {
+  console.log('currentPageProp',props.currentPageProp);
+  console.log('sp', Pages.START_PAGE)
   switch (props.currentPageProp) {
     case 'START_PAGE':
-      props.onStartPage && (startPage.value = 'START_PAGE');
+      props.onStartPage && (currentPage.value = 'START_PAGE');
       break;
     case 'PARAMS_PAGE':
-      startPage.value = 'START_PAGE';
+      currentPage.value = 'START_PAGE';
       if (typeof props.procedureProp?.[0] == 'object') {
         procedureId.value = props.procedureProp?.[0]?.id;
         procedureName.value = props.procedureProp[0].name;

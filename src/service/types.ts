@@ -171,5 +171,9 @@ export interface iConfig {
   editFavorites: boolean;
 }
 
+export enum Pages {
+  START_PAGE
+}
+
 
 
