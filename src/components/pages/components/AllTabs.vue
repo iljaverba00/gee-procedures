@@ -33,6 +33,7 @@ const checkProcedure = () => {
     : props.procedures;
 };
 
+console.log(!props.configProcedure?.onlyFavorites && !props.onlyImport)
 
 </script>
 
