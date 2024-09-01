@@ -11,7 +11,7 @@ import {
   QItemLabel,
   QTooltip,
   QItemSection,
-  QBtn
+  QBtn,
 } from 'quasar';
 
 import { ref } from 'vue';
@@ -144,7 +144,7 @@ console.log(!props.configProcedure?.onlyFavorites && !props.onlyImport);
         </q-item>
       </q-list>
 
-      <div v-if="!(procedureFavorites?.length || reportsFavorites?.length)"
+      <div v-if="!procedureFavorites?.length && !reportsFavorites?.length"
            style="height: 100%; user-select: none">
         <div class="text-subtitle1 absolute-center" :style="`font-size:1rem`">
           <div style="user-select: none; text-align: center">В избранном пока нет процедур или отчетов!</div>
@@ -279,11 +279,13 @@ console.log(!props.configProcedure?.onlyFavorites && !props.onlyImport);
   </q-tab-panels>
 </template>
 
-<style scoped lang="sass">
-:deep(.q-tree__tickbox)
-  margin-right: 4px
+<style scoped>
+:deep(.q-tree__tickbox) {
+  margin-right: 4px;
   display: none !important
+}
 
-.tab-panels
+.tab-panels {
   height: calc(100% - 55px)
+}
 </style>
