@@ -95,24 +95,38 @@ export interface RunProcedure {
 export interface ProcedureInstance {
   processId: string,
   instance: pRunner
+
 }
 
 export interface pRunner {
   finish: () => void;
+  run:()=>string
   stateControl: rStateControl;
 }
 
 export interface rStateControl {
   name: Ref<string>
-  state: object
+  stateControl: iState
   setState: (name: string, value: object) => void
   clearState: () => void
   setEmpty: (name:string) => void
   setActions: (act:object)=>void,
 }
 
+export interface iState{
+  pp?:iSPP
+  downloadLinks?: iDownloadLink[]
+  messages?: string[]
+}
+export interface iSPP{
+  parameters:ProcedureParam
+  isValidParameters: ()=>boolean
+  getParamsFiles: ()=>ProcedureParam[]
+  getSelectedValueParams: ()=> object
+}
+
 export interface iDownloadLink {
-  fileName: string
+  fileName?: string
   fileUid?: string
 }
 

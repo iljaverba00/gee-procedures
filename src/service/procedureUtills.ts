@@ -1,5 +1,6 @@
 import { computed } from 'vue';
 import {
+  iSPP,
   ppDialogType,
   ppSelectValue,
   ppType,
@@ -111,7 +112,7 @@ export class ProcedureParameters {
   // }
 
   // Проверка параметров на валидность
-  isValidParameters() {
+  isValidParameters():boolean {
     if (!this.parameters) return false;
 
     const rules = rulesProcedureParams();
@@ -201,7 +202,7 @@ export class ProcedureParameters {
     return checkThreeParameters(this.parameters);
   }
 
-  getParamsFiles() {
+  getParamsFiles(): ProcedureParam[] {
     const parametersExp = this.getExpandedParameters();
 
     return parametersExp
@@ -220,7 +221,7 @@ export class ProcedureParameters {
   }
 
   // JSON выбранных значений параметров
-  getSelectedValueParams() {
+  getSelectedValueParams(): object {
     let value = {} as { [key: string]: any };
     let parametersExp = this.getExpandedParameters();
 

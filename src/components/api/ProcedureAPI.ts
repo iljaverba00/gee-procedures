@@ -6,7 +6,8 @@ import {
   StageControl,
 } from '../../service/procedureUtills.ts';
 import { ref, watch, WatchStopHandle } from 'vue';
-import { ProcedureInstance, RunProcedure } from '../../service/types.ts';
+import { iDownloadLink, iState, ProcedureInstance, pRunner, RunProcedure } from '../../service/types.ts';
+import { iResponse } from '../../service/RequestTypes.ts';
 
 
 export default class ProcedureAPI {
@@ -46,8 +47,8 @@ export default class ProcedureAPI {
   }
 }
 
-export function ProcedureRunner({ id, factId, cellId, selected, updateTable }: RunProcedure) {
-  const processId = ref(null);
+export function ProcedureRunner({ id, factId, cellId, selected, updateTable }: RunProcedure): pRunner {
+  const processId = ref<string>();
   const finished = ref(false);
   const maxTimeout = 1000 * 30;
   let timeout = 0;
@@ -71,13 +72,16 @@ export function ProcedureRunner({ id, factId, cellId, selected, updateTable }: R
 
   const sendParams = async () => {
     procedureCheck.value = !procedureCheck.value;
-    const procParams = stateControl.state.value['pp'];
-    if (procParams.isValidParameters()) {
+    const procParams = stateControl.state.value?.pp;
+    if (procParams?.isValidParameters()) {
       stateControl.setState('PROGRESS_PAGE');
       timeout = 0;
       const pps = procParams.getParamsFiles();
       for await (const par of pps) {
-        await requests.uploadFileProcedure(par.name, par.selectValue, processId.value);
+        if (par?.name && par?.selectValue) {
+          // @ts-ignore
+          await requests.uploadFileProcedure(par.name, par.selectValue, processId.value);
+        }
       }
       const params = procParams.getSelectedValueParams();
       await requests.parametersPushProcedure(params, processId.value);
@@ -88,23 +92,25 @@ export function ProcedureRunner({ id, factId, cellId, selected, updateTable }: R
     return true;
   };
 
-  const sendDialog = async (param) => {
+  const sendDialog = async (param: string) => {
     await requests.dialogAnswerProcedure(param, processId.value);
     stateControl.setState('PROGRESS_PAGE');
   };
 
-  const sendCustomDialog = async (param) => {
+  const sendCustomDialog = async (param: object) => {
     await requests.customDialogAnswerProcedure(param, processId.value);
     stateControl.setState('PROGRESS_PAGE');
   };
 
-  const domessage = (message) => {
+  const domessage = (message: iResponse) => {
     setTimeout(async () => {
       if (!finished.value) {
         let result = await requests.continueProcedure(processId.value);
         await domessage(result);
       }
     }, timeout);
+
+    console.log(message);
     // async function getRecordIds(graphIds, layerId) {
     //   const filter = getFilter(graphIds);
     //   const factId = groupingFacts.value.layerIdIndex[layerId].id;
@@ -160,14 +166,18 @@ export function ProcedureRunner({ id, factId, cellId, selected, updateTable }: R
         timeout < maxTimeout && (timeout += 500);
         break;
       case 'PARAMETERS':
-        stateControl.setState('PARAMS_PAGE', { pp: new ProcedureParameters(message.object) });
+        if (typeof message.object == 'object') {
+          stateControl.setState('PARAMS_PAGE', { pp: new ProcedureParameters(message.object) });
+        }
         break;
       case 'ACTIONS':
         stateControl.setActions(message.object);
         break;
       case 'SAVE_FILE': {
-        const downloadLinks = [{ fileUid: message.object, fileName: message.fileName }];
-        stateControl.setState('FINISH_PAGE', { downloadLinks });
+        if (typeof message.object == 'string') {
+          const downloadLinks: iDownloadLink[] = [{ fileUid: message.object, fileName: message.fileName }];
+          stateControl.setState('FINISH_PAGE', { downloadLinks });
+        }
         break;
       }
       case 'THROWABLE':
@@ -273,18 +283,18 @@ export function ProcedureRunner({ id, factId, cellId, selected, updateTable }: R
 
 export function StateControl() {
   const name = ref('PROGRESS_PAGE');
-  const state = ref({});
+  const state = ref<iState>();
 
   const finishState = ref({});
-  let downloadLinks = [];
-  let messages = [];
+  let downloadLinks: string[] = [];
+  let messages: string[] = [];
   let actions = [];
 
   /**Задаем activeState
    * @param {String} nameState название состояния
    * @param {Object} value значение состояния
    */
-  const setState = (nameState, value = {}) => {
+  const setState = (nameState, value: iState = {}) => {
     state.value = Object.assign(name.value === nameState ? state.value : {}, value);
     name.value = nameState;
     if (name.value === 'FINISH_PAGE' || name.value === 'PROGRESS_PAGE') {

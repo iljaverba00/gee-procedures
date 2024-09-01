@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig } from 'axios';
-import { SqlProcedureType } from './RequestTypes.ts';
+import { iResponse, SqlProcedureType } from './RequestTypes.ts';
 
 
 export default {
@@ -33,7 +33,7 @@ export default {
     };
     void axios.post(url, data, config);
   },
-  customDialogAnswerProcedure: async (value: object, processId: string, baseURL?: string) => {
+  customDialogAnswerProcedure: async (value: object, processId?: string, baseURL?: string) => {
     const url = '/ActionServlet';
     const config = {
       baseURL,
@@ -48,7 +48,7 @@ export default {
     };
     return await axios.post(url, value, config);
   },
-  dialogAnswerProcedure: async (value: string, processId: string, baseURL?: string) => {
+  dialogAnswerProcedure: async (value: string, processId?: string, baseURL?: string) => {
     const url = '/ActionServlet';
     const config = {
       baseURL,
@@ -74,7 +74,7 @@ export default {
     return await axios.get(url, config);
   },
 
-  startProcedure: async (procId: string, factId: string, cellId?: string, method?: string, param?: string[] | string, baseURL?: string) => {
+  startProcedure: async (procId: string, factId: string, cellId?: string, method?: string, param?: string[] | string, baseURL?: string): Promise<iResponse> => {
     let url = '/ActionServlet';
     if (method === 'selected' && param && Array.isArray(param)) {
       url += param.map(p => `&pkValue=${p}`).join();
@@ -91,9 +91,9 @@ export default {
         cellId: cellId ? cellId : undefined,
       },
     };
-    return await axios.get(url, config);
+    return (await axios.get(url, config)).data;
   },
-  continueProcedure: async (processId: string, baseURL?: string) => {
+  continueProcedure: async (processId?: string, baseURL?: string):Promise<iResponse> => {
     const url = `/ActionServlet`;
     const config = {
       baseURL,
@@ -104,9 +104,9 @@ export default {
         PROCESS_ID: processId,
       },
     };
-    return await axios.get(url, config);
+    return (await axios.get<iResponse>(url, config)).data;
   },
-  parametersPushProcedure: async (body: object, processId: string, baseURL?: string) => {
+  parametersPushProcedure: async (body: object, processId?: string, baseURL?: string) => {
     const url = '/ActionServlet';
     const config = {
       baseURL,
