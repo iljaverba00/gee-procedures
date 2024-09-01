@@ -185,23 +185,23 @@ const updateTable = () => {
 </script>
 
 <template>
-  <progress-page
-    v-if="currentPage === 'PROGRESS_PAGE'"
-    :stage-control="stageControl"
-  />
-
   <start-page
     v-if="currentPage === 'START_PAGE'"
     v-model:procedure-id="procedureId"
     v-model:procedure-name="procedureName"
     v-model:procedure-group="procedureGroup"
     :all-procedures="props.allProcedures"
+    :config-procedure="config"
     :propTab="propTab"
     :onlyImport="onlyImport"
   />
+  <progress-page
+    v-else-if="currentPage === 'PROGRESS_PAGE'"
+    :stage-control="stageControl"
+  />
 
   <params-page
-    v-if="currentPage === 'PARAMS_PAGE'"
+    v-else-if="currentPage === 'PARAMS_PAGE'"
     v-model:procedure-params="csPP"
     :procedure-name="procedureName"
     :procedure-group="procedureGroup"
@@ -209,13 +209,13 @@ const updateTable = () => {
   />
 
   <dialog-page
-    v-if="currentPage === 'DIALOG_PAGE'"
+    v-else-if="currentPage === 'DIALOG_PAGE'"
     :dialog-data="csDialogData"
     @press="runner.nextPage"
   />
 
   <finish-page
-    v-if="currentPage === 'FINISH_PAGE'"
+    v-else-if="currentPage === 'FINISH_PAGE'"
     :download-links="csDownloadLinks"
     :messages="csMessages"
     :post-process="csPostProcess"
@@ -223,10 +223,10 @@ const updateTable = () => {
     @updateTable="updateTable"
   />
 
-  <error-page v-if="currentPage === 'ERROR_PAGE'" :msg="csError" :name="procedureName" />
+  <error-page v-else-if="currentPage === 'ERROR_PAGE'" :msg="csError" :name="procedureName" />
 
   <custom-dialog-page
-    v-if="currentPage === 'CUSTOM_DIALOG_PAGE'"
+    v-else-if="currentPage === 'CUSTOM_DIALOG_PAGE'"
     :data="csCustomDialogData"
     @press="runner.nextPage"
   />

@@ -98,7 +98,7 @@ export default {
 </script>
 <template>
   <AllTabs
-    v-if="!configProcedure.onlyFavorites"
+    v-if="!configProcedure?.onlyFavorites"
     :reports="reports"
     :procedures="procedures"
     :proceduresFact="proceduresFact"
