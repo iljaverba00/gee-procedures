@@ -35,13 +35,13 @@ export default {
       return proc;
     });
 
-    const proceduresFact: ComputedRef<ProcedureEl[]> = computed((_) => props.allProcedures.procedureFact);
+    const proceduresFact: ComputedRef<ProcedureEl[]> = computed((_) => props.allProcedures?.procedureFact);
 
-    const reports: ComputedRef<ProcedureEl[]> = computed((_) => props.allProcedures.reportsList);
+    const reports: ComputedRef<ProcedureEl[]> = computed((_) => props.allProcedures?.reportsList);
 
     //todo set для избранных процедур
-    const procedureFavoritesIds: ComputedRef<ProcedureEl[]> = computed(()=> props.allProcedures.favorites.procedures);
-    const reportsFavoritesIds: ComputedRef<ProcedureEl[]> = computed(()=> props.allProcedures.favorites.reports);
+    const procedureFavoritesIds: ComputedRef<ProcedureEl[]> = computed(()=> props.allProcedures?.favorites?.procedures);
+    const reportsFavoritesIds: ComputedRef<ProcedureEl[]> = computed(()=> props.allProcedures?.favorites?.reports);
 
 
     const procedureFavorites = computed((_) => {
